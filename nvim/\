@@ -11,16 +11,11 @@ return {
   version = "^1.0.0",
   build = ":UpdateRemotePlugins",
   init = function()
-    vim.g.molten_auto_open_output = false -- cannot be true if molten_image_provider = "wezterm"
-    vim.g.molten_output_show_more = true
-    vim.g.molten_image_provider = "wezterm"
-    vim.g.molten_output_virt_lines = true
-    vim.g.molten_split_direction = "right" --direction of the output window, options are "right", "left", "top", "bottom"
-    vim.g.molten_split_size = 40 --(0-100) % size of the screen dedicated to the output window
+    vim.g.molten_output_win_max_height = 12
+    vim.g.molten_image_provider = "image.nvim"
+    vim.g.molten_wrap_output = true
     vim.g.molten_virt_text_output = true
-    vim.g.molten_use_border_highlights = true
     vim.g.molten_virt_lines_off_by_1 = true
-    vim.g.molten_auto_image_popup = false
   end,
   config = function()
     vim.keymap.set("n", "<localleader>rk", ":MoltenRestart<CR>", { silent = true })
@@ -30,18 +25,48 @@ return {
 --------------------------------------------------------------------------------
 -------------------------------- 3rd/image.nvim --------------------------------
 --------------------------------------------------------------------------------
--- {
---     "3rd/image.nvim",
---     opts = {
---       backend = "kitty",
---       integrations = {},
---       max_width = 100,
---       max_height = 12,
---       max_height_window_percentage = math.huge,
---       max_width_window_percentage = math.huge,
---       window_overlap_clear_enabled = true,
---       window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
--- },
+{
+  "3rd/image.nvim",
+  requires = {
+    "nvim-lua/plenary.nvim",
+    "m00qek/baleia.nvim",
+  },
+  config = function()
+    require("image").setup({
+      backend = "kitty",
+      processor = "magick_rock",
+      integrations = {
+        markdown = {
+          enabled = true,
+          clear_in_insert_mode = false,
+          download_remote_images = true,
+          only_render_image_at_cursor = false,
+          floating_windows = false,
+          filetypes = { "markdown", "vimwiki" },
+        },
+        neorg = {
+          enabled = true,
+          filetypes = { "norg" },
+        },
+        typst = {
+          enabled = true,
+          filetypes = { "typst" },
+        },
+        html = { enabled = false },
+        css = { enabled = false },
+      },
+      max_width = nil,
+      max_height = nil,
+      max_width_window_percentage = nil,
+      max_height_window_percentage = 50,
+      window_overlap_clear_enabled = false,
+      window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "snacks_notif", "scrollview", "scrollview_sign" },
+      editor_only_render_when_focused = false,
+      tmux_show_only_in_active_window = false,
+      hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" },
+    })
+  end,
+},
 --------------------------------------------------------------------------------
 ----------------------------- GCBallesteros/jupytext.nvim ----------------------
 --------------------------------------------------------------------------------
@@ -91,11 +116,11 @@ return {
     })
 
     local runner = require("quarto.runner")
-    vim.keymap.set("n", "<localleader>rc", runner.run_cell, { silent = true, desc = "Run current cell" })
-    vim.keymap.set("n", "<localleader>ra", runner.run_above, { silent = true, desc = "Run cells above" })
-    vim.keymap.set("n", "<localleader>rA", runner.run_all, { silent = true, desc = "Run all cells" })
-    vim.keymap.set("n", "<localleader>rl", runner.run_line, { silent = true, desc = "Run current line" })
-    vim.keymap.set("v", "<localleader>rr", runner.run_range, { silent = true, desc = "Run selected range" })
+    vim.keymap.set("n", "<localleader>rc", runner.run_cell, { silent = true })
+    vim.keymap.set("n", "<localleader>ra", runner.run_above, { silent = true })
+    vim.keymap.set("n", "<localleader>rA", runner.run_all, { silent = true })
+    vim.keymap.set("n", "<localleader>rl", runner.run_line, { silent = true })
+    vim.keymap.set("v", "<localleader>rr", runner.run_range, { silent = true })
     vim.keymap.set("n", "<localleader>RA", function()
       runner.run_all(true)
     end, { silent = true })
@@ -165,9 +190,5 @@ return {
   end,
 },
 --------------------------------------------------------------------------------
-{
-    'willothy/wezterm.nvim',
-    config = true
-},
 }
 
