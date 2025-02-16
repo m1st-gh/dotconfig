@@ -14,8 +14,8 @@ wezterm.on('tabs.toggle-tab-bar', function(window, _pane)
   })
 end)
 
+
 return {
-  -- Set font to FiraCode Nerd Font Mono
   font = wezterm.font("FiraCode Nerd Font Mono", { weight = "Medium" }),
   font_size = 12.0, -- Adjust as needed
 
@@ -32,7 +32,8 @@ return {
     top = 0,
     bottom = 0,
   },
-  default_prog = { 'pwsh.exe' },
+  
+  default_prog = default_prog,
 
   keys = {
     {
@@ -42,4 +43,3 @@ return {
     },
   }
 }
-

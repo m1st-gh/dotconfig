@@ -6,7 +6,7 @@
 local M = {}
 
 M.base46 = {
-	theme = "monokai_pro_spectrum",
+	theme = "doomchad",
 
 	hl_override = {
 		Comment = { italic = true },
