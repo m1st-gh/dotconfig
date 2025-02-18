@@ -1,6 +1,6 @@
 return {
   {
-    "loctvl842/monokai-pro.nvim",
+    "RRethy/vim-illuminate",
     lazy = false,
   },
   {
@@ -20,6 +20,11 @@ return {
   },
   {
     "ellisonleao/dotenv.nvim",
+    cmd = { "Dotenv" },
+    opts = function(_, _)
+      local dotenv = require "dotenv"
+      dotenv.setup {}
+    end,
     lazy = true, -- Set to lazy load
   },
   {
@@ -41,7 +46,12 @@ return {
               block_deviders = { "# %%", "#%%" },
             },
           },
-          repl_open_cmd = view.split.vertical.botright(50),
+          -- Using a dynamic split: 40% width, with custom window options
+          repl_open_cmd = view.split.vertical("40%", {
+            winfixwidth = false,
+            winfixheight = false,
+            number = true,
+          }),
         },
         highlight = { italic = true },
         ignore_blank_lines = true,
@@ -86,13 +96,8 @@ return {
   },
   {
     "GCBallesteros/jupytext.nvim",
-    cmd = { "Jupytext" },
-    opts = {
-      style = "hydrogen",
-      output_extension = "auto",
-      force_ft = nil,
-      custom_language_formatting = {},
-    },
+    config = true,
+    lazy = false,
   },
   {
     "jbyuki/nabla.nvim",
