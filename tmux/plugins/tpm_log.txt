@@ -1,0 +1,78 @@
+[2025-02-20 19:31:33.314]	List of discovered tpm plugins: tmux-plugins/tmux-cpu tmux-plugins/tmux-resurrect tmux-plugins/tmux-continuum
+[2025-02-20 19:31:33.321]	Invoking /home/kush/.config/tmux/plugins/tpm/bin/install_plugins
+[2025-02-20 19:31:33.345]	Installing "tmux-cpu"
+[2025-02-20 19:31:33.352]	Installing "tmux-resurrect"
+[2025-02-20 19:31:33.359]	Installing "tmux-continuum"
+[2025-02-20 19:31:33.558]	  "tmux-continuum" download success
+[2025-02-20 19:31:33.570]	  "tmux-cpu" download success
+[2025-02-20 19:31:33.746]	  "tmux-resurrect" download success
+[2025-02-20 19:31:33.754]	Done.
+
+[2025-02-20 19:32:35.147]	List of discovered tpm plugins: tmux-plugins/tmux-cpu tmux-plugins/tmux-resurrect tmux-plugins/tmux-continuum
+[2025-02-20 19:32:35.155]	Invoking /home/kush/.config/tmux/plugins/tpm/bin/install_plugins
+[2025-02-20 19:32:35.179]	Already installed "tmux-cpu"
+[2025-02-20 19:32:35.186]	Already installed "tmux-continuum"
+[2025-02-20 19:32:35.193]	Already installed "tmux-resurrect"
+[2025-02-20 19:32:35.200]	Invoking /home/kush/.config/tmux/plugins/tpm/bin/update_plugins all
+[2025-02-20 19:32:35.217]	Updating all plugins!
+[2025-02-20 19:32:35.225]	
+[2025-02-20 19:32:35.382]	  "tmux-continuum" update success
+[2025-02-20 19:32:35.389]	  "tmux-cpu" update success
+[2025-02-20 19:32:35.396]	    | Already up to date.
+[2025-02-20 19:32:35.403]	    | Already up to date.
+[2025-02-20 19:32:35.745]	  "tmux-resurrect" update success
+[2025-02-20 19:32:35.752]	    | Already up to date.
+[2025-02-20 19:32:35.759]	Invoking /home/kush/.config/tmux/plugins/tpm/bin/clean_plugins all
+[2025-02-20 19:32:35.783]	Done.
+
+[2025-02-20 20:17:27.810]	List of discovered tpm plugins: tmux-plugins/tmux-cpu tmux-plugins/tmux-resurrect tmux-plugins/tmux-continuum
+[2025-02-20 20:17:27.817]	Invoking /home/kush/.config/tmux/plugins/tpm/bin/install_plugins
+[2025-02-20 20:17:27.842]	Already installed "tmux-cpu"
+[2025-02-20 20:17:27.849]	Already installed "tmux-resurrect"
+[2025-02-20 20:17:27.856]	Already installed "tmux-continuum"
+[2025-02-20 20:17:27.863]	Invoking /home/kush/.config/tmux/plugins/tpm/bin/update_plugins all
+[2025-02-20 20:17:27.879]	Updating all plugins!
+[2025-02-20 20:17:27.886]	
+[2025-02-20 20:17:28.090]	  "tmux-cpu" update success
+[2025-02-20 20:17:28.098]	    | Already up to date.
+[2025-02-20 20:17:28.336]	  "tmux-continuum" update success
+[2025-02-20 20:17:28.343]	    | Already up to date.
+[2025-02-20 20:17:28.376]	  "tmux-resurrect" update success
+[2025-02-20 20:17:28.383]	    | Already up to date.
+[2025-02-20 20:17:28.390]	Invoking /home/kush/.config/tmux/plugins/tpm/bin/clean_plugins all
+[2025-02-20 20:17:28.414]	Done.
+
+[2025-02-20 22:40:18.613]	List of discovered tpm plugins: tmux-plugins/tmux-cpu tmux-plugins/tmux-resurrect tmux-plugins/tmux-continuum
+[2025-02-20 22:40:18.620]	Invoking /home/kush/.config/tmux/plugins/tpm/bin/install_plugins
+[2025-02-20 22:40:18.645]	Already installed "tmux-cpu"
+[2025-02-20 22:40:18.652]	Already installed "tmux-resurrect"
+[2025-02-20 22:40:18.658]	Already installed "tmux-continuum"
+[2025-02-20 22:40:18.665]	Invoking /home/kush/.config/tmux/plugins/tpm/bin/update_plugins all
+[2025-02-20 22:40:18.681]	Updating all plugins!
+[2025-02-20 22:40:18.689]	
+[2025-02-20 22:40:18.855]	  "tmux-continuum" update success
+[2025-02-20 22:40:18.862]	    | Already up to date.
+[2025-02-20 22:40:18.869]	  "tmux-cpu" update success
+[2025-02-20 22:40:18.875]	    | Already up to date.
+[2025-02-20 22:40:18.907]	  "tmux-resurrect" update success
+[2025-02-20 22:40:18.914]	    | Already up to date.
+[2025-02-20 22:40:18.921]	Invoking /home/kush/.config/tmux/plugins/tpm/bin/clean_plugins all
+[2025-02-20 22:40:18.945]	Done.
+
+[2025-02-21 20:27:22.329]	List of discovered tpm plugins: tmux-plugins/tmux-cpu tmux-plugins/tmux-resurrect tmux-plugins/tmux-continuum
+[2025-02-21 20:27:22.336]	Invoking /home/kush/.config/tmux/plugins/tpm/bin/install_plugins
+[2025-02-21 20:27:22.364]	Already installed "tmux-resurrect"
+[2025-02-21 20:27:22.371]	Already installed "tmux-cpu"
+[2025-02-21 20:27:22.379]	Already installed "tmux-continuum"
+[2025-02-21 20:27:22.387]	Invoking /home/kush/.config/tmux/plugins/tpm/bin/update_plugins all
+[2025-02-21 20:27:22.402]	Updating all plugins!
+[2025-02-21 20:27:22.411]	
+[2025-02-21 20:27:22.601]	  "tmux-cpu" update success
+[2025-02-21 20:27:22.608]	    | Already up to date.
+[2025-02-21 20:27:22.616]	  "tmux-continuum" update success
+[2025-02-21 20:27:22.623]	    | Already up to date.
+[2025-02-21 20:27:22.631]	  "tmux-resurrect" update success
+[2025-02-21 20:27:22.639]	    | Already up to date.
+[2025-02-21 20:27:22.647]	Invoking /home/kush/.config/tmux/plugins/tpm/bin/clean_plugins all
+[2025-02-21 20:27:22.672]	Done.
+
