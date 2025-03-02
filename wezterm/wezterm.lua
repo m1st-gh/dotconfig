@@ -30,7 +30,7 @@ config.colors = {
 
 	-- Cursor colors
 	cursor_bg = palette.text,
-	cursor_fg = palette.background,
+	--	cursor_fg = palette.background,
 	cursor_border = palette.text,
 
 	-- Selection colors
@@ -56,7 +56,7 @@ config.colors = {
 		palette.accent4, -- Bright Blue (original accent4)
 		palette.accent5, -- Bright Magenta (original accent5)
 		palette.accent6, -- Bright Cyan (original accent6)
-		palette.text, -- Bright White
+		palette.text,  -- Bright White
 	},
 
 	-- Arbitrary indexed colors (if needed)
@@ -84,6 +84,8 @@ config.window_padding = {
 	bottom = 0,
 }
 
+config.default_domain = "WSL:openSUSE-Tumbleweed"
+-- config.default_prog = { "wsl.exe" }
 -- Tab bar configuration
 config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = false
