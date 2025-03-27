@@ -2,8 +2,11 @@ local wezterm = require("wezterm")
 local act = wezterm.action
 local config = wezterm.config_builder()
 
-config.font = wezterm.font("FiraCode Nerd Font Mono", { weight = "Medium" })
-config.font_size = 12
+-- Font configuration
+config.font = wezterm.font("FiraCode Nerd Font Mono")
+config.font_size = 14.1
+-- Custom color palette from your theme
+-- Define your custom palette
 
 local palette = {
 	dark1 = "#191919",
@@ -18,12 +21,19 @@ local palette = {
 	accent6 = "#5ad4e6",
 }
 
-config.colors = {
+-- Helper function to darken a hex color by a given factor (default 0.7)
 
+config.colors = {
+	-- Default text and background colors
 	foreground = palette.text,
 	background = palette.background,
+
+	-- Cursor colors
 	cursor_bg = palette.text,
+	-- cursor_fg = palette.background,
 	cursor_border = palette.text,
+
+	-- Selection colors
 	selection_fg = palette.background,
 	selection_bg = palette.accent1,
 
@@ -39,18 +49,23 @@ config.colors = {
 	},
 
 	brights = {
-		palette.dark2,
-		palette.accent1,
-		palette.accent2,
-		palette.accent3,
-		palette.accent4,
-		palette.accent5,
-		palette.accent6,
-		palette.text,
+		palette.dark2, -- Bright Black
+		palette.accent1, -- Bright Red (original accent1)
+		palette.accent2, -- Bright Green (original accent2)
+		palette.accent3, -- Bright Yellow (original accent3)
+		palette.accent4, -- Bright Blue (original accent4)
+		palette.accent5, -- Bright Magenta (original accent5)
+		palette.accent6, -- Bright Cyan (original accent6)
+		palette.text, -- Bright White
 	},
 
+	-- Arbitrary indexed colors (if needed)
+	indexed = { [136] = palette.accent4 },
+
+	-- Compose cursor color (when input composition is active)
 	compose_cursor = palette.accent1,
 
+	-- Colors for copy mode and quick select
 	copy_mode_active_highlight_bg = { Color = palette.dark2 },
 	copy_mode_active_highlight_fg = { AnsiColor = "Black" },
 	copy_mode_inactive_highlight_bg = { Color = palette.accent2 },
@@ -69,9 +84,11 @@ config.window_padding = {
 	bottom = 0,
 }
 
-config.default_domain = "WSL:openSUSE-Tumbleweed"
-config.default_prog = { "wsl.exe" }
 -- Tab bar configuration
 config.hide_tab_bar_if_only_one_tab = true
+config.default_domain = "WSL:RTSO-Distro"
+
+-- config.animation_fps = 60
+-- config.front_end = "WebGpu"
 
 return config
