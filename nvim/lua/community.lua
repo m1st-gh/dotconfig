@@ -9,20 +9,19 @@ return {
   { import = "astrocommunity.search.grug-far-nvim" },
   { import = "astrocommunity.terminal-integration.vim-tmux-yank" },
   { import = "astrocommunity.pack.quarto" },
-  { import = "astrocommunity.pack.lua" }, -- import/override with your plugins folder
-  { import = "astrocommunity.pack.cpp" },
-  { import = "astrocommunity.pack.typescript" }, -- import/override with your plugins folder
-  -- { import = "astrocommunity.editing-support.copilotchat-nvim" },
+  { import = "astrocommunity.pack.lua" },
+  { import = "astrocommunity.pack.typescript" },
   { import = "astrocommunity.colorscheme.monokai-pro-nvim" },
-  -- { import = "astrocommunity.completion.copilot-cmp" },
   { import = "astrocommunity.terminal-integration.vim-tmux-navigator" },
   { import = "astrocommunity.utility.hover-nvim" },
-  -- {
-  --   "CopilotC-Nvim/CopilotChat.nvim",
-  --   opts = {
-  --     model = "claude-3.7-sonnet-thought",
-  --   },
-  -- },
+  { import = "astrocommunity.completion.copilot-cmp" },
+  { import = "astrocommunity.editing-support.copilotchat-nvim" },
+  {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    opts = {
+      model = "claude-3.7-sonnet",
+    },
+  },
   {
     "loctvl842/monokai-pro.nvim",
     config = function()
