@@ -20,5 +20,21 @@ M.ui = {
     lazyload = false,
   },
 }
+-- Add a timer function for clearing command line
+vim.api.nvim_exec(
+  [[
+function! s:empty_message(timer)
+  if mode() ==# 'n'
+    echon ''
+  endif
+endfunction
+
+augroup cmd_msg_cls
+  autocmd!
+  autocmd CmdlineLeave : call timer_start(5000, funcref('s:empty_message'))
+augroup END
+]],
+  false
+)
 
 return M
