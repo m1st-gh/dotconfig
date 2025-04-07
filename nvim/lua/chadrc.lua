@@ -6,7 +6,7 @@
 local M = {}
 
 M.base46 = {
-  theme = "onedark",
+  theme = "tokyonight",
 
   hl_override = {
     Comment = { italic = true },
@@ -17,24 +17,9 @@ M.base46 = {
 M.nvdash = { load_on_startup = true }
 M.ui = {
   tabufline = {
-    lazyload = false,
+    enabled = true,
+    lazyload = false, -- default value
   },
 }
--- Add a timer function for clearing command line
-vim.api.nvim_exec(
-  [[
-function! s:empty_message(timer)
-  if mode() ==# 'n'
-    echon ''
-  endif
-endfunction
-
-augroup cmd_msg_cls
-  autocmd!
-  autocmd CmdlineLeave : call timer_start(5000, funcref('s:empty_message'))
-augroup END
-]],
-  false
-)
 
 return M

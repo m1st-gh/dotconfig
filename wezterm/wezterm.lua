@@ -1,27 +1,90 @@
 local wezterm = require("wezterm")
+local smart_splits = wezterm.plugin.require("https://github.com/mrjones2014/smart-splits.nvim")
 local config = wezterm.config_builder()
-config.color_scheme = "One Dark (Gogh)"
--- Font configuration
-config.font = wezterm.font("FiraCode Nerd Font Mono")
-config.font_size = 16
+local act = wezterm.action
+
+-- Your existing WezTerm configuration (add it here)
+wezterm.on("toggle-tabbar", function(window, _)
+	local overrides = window:get_config_overrides() or {}
+	overrides.enable_tab_bar = not overrides.enable_tab_bar
+	window:set_config_overrides(overrides)
+end)
 config.window_padding = {
-	left = 4,
-	right = 4,
-	top = 4,
-	bottom = 4,
+	left = 0,
+	right = 0,
+	top = 0,
+	bottom = 0,
 }
-config.colors = {
-	cursor_fg = "black",
-	cursor_bg = "white",
+config.adjust_window_size_when_changing_font_size = false
+config.window_close_confirmation = "NeverPrompt"
+config.inactive_pane_hsb = {
+	saturation = 1,
+	brightness = 1,
 }
 
--- Tab bar configuration
-config.hide_tab_bar_if_only_one_tab = true
+config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 3000 }
+config.disable_default_key_bindings = true
+config.keys = {
+	-- Leader bindings
+	{ key = "a", mods = "LEADER|CTRL", action = act.SendKey({ key = "a", mods = "CTRL" }) },
+	{ key = "r", mods = "LEADER", action = act.ReloadConfiguration },
+	{ key = "\\", mods = "LEADER", action = act.SplitPane({ direction = "Down", size = { Percent = 50 } }) },
+	{
+		key = "|",
+		mods = "LEADER|SHIFT",
+		action = act.SplitPane({ direction = "Right", size = { Percent = 50 } }),
+	},
+	{ key = "H", mods = "LEADER|SHIFT", action = act.AdjustPaneSize({ "Left", 2 }) },
+	{ key = "J", mods = "LEADER|SHIFT", action = act.AdjustPaneSize({ "Down", 2 }) },
+	{ key = "K", mods = "LEADER|SHIFT", action = act.AdjustPaneSize({ "Up", 2 }) },
+	{ key = "L", mods = "LEADER|SHIFT", action = act.AdjustPaneSize({ "Right", 2 }) },
+	{ key = "X", mods = "LEADER|SHIFT", action = act.CloseCurrentPane({ confirm = true }) },
+	{ key = "-", mods = "LEADER", action = act.TogglePaneZoomState },
+	{ key = "q", mods = "LEADER", action = act.CloseCurrentPane({ confirm = true }) },
+	{ key = "x", mods = "LEADER", action = act.CloseCurrentTab({ confirm = true }) },
+	{ key = "c", mods = "LEADER", action = act.SpawnTab("DefaultDomain") },
+	{ key = "o", mods = "LEADER", action = act.ActivatePaneDirection("Next") },
+	{ key = "f", mods = "LEADER", action = act.ToggleFullScreen },
+	{ key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
 
--- Automatic WSL Domain Detection
+	-- Global bindings
+	{ key = "\\", mods = "CTRL", action = act.ActivatePaneDirection("Prev") },
+	{ key = "=", mods = "CTRL", action = act.IncreaseFontSize },
+	{ key = "-", mods = "CTRL", action = act.DecreaseFontSize },
+	{ key = "0", mods = "CTRL", action = act.ResetFontSize },
+	{ key = "9", mods = "CTRL", action = act.EmitEvent("toggle-tabbar") },
+	-- Alt+number to switch tabs
+	{ key = "1", mods = "ALT", action = act.ActivateTab(0) },
+	{ key = "2", mods = "ALT", action = act.ActivateTab(1) },
+	{ key = "3", mods = "ALT", action = act.ActivateTab(2) },
+	{ key = "4", mods = "ALT", action = act.ActivateTab(3) },
+	{ key = "5", mods = "ALT", action = act.ActivateTab(4) },
+	{ key = "6", mods = "ALT", action = act.ActivateTab(5) },
+	{ key = "7", mods = "ALT", action = act.ActivateTab(6) },
+	{ key = "8", mods = "ALT", action = act.ActivateTab(7) },
+	{ key = "9", mods = "ALT", action = act.ActivateTab(8) },
+	{ key = "0", mods = "ALT", action = act.ActivateTab(9) },
+}
+config.font = wezterm.font({ family = "FiraCode Nerd Font Mono" })
+config.font_size = 14
+config.color_scheme = "tokyonight"
+config.automatically_reload_config = true
+config.status_update_interval = 1000
+config.scrollback_lines = 50000
+
 local wsl_domains = wezterm.default_wsl_domains()
 if #wsl_domains > 0 then
-	config.default_domain = wsl_domains[1].name -- Use the first detected WSL domain
+	config.default_domain = wsl_domains[1].name
 end
+
+-- Smart Splits Configuration
+smart_splits.apply_to_config(config, {
+	direction_keys = { "h", "j", "k", "l" },
+	modifiers = {
+		move = "CTRL",
+		resize = "META",
+	},
+	log_level = "info",
+})
 
 return config

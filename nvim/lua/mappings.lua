@@ -1,7 +1,7 @@
 require "nvchad.mappings"
 
 -- add yours here
-
+local chadrc = require "chadrc"
 local map = vim.keymap.set
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
@@ -20,21 +20,7 @@ map(
 map("n", "<Leader>de", "<cmd>lua require'dap'.terminate()<CR>", { desc = "Debugger reset" })
 map("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Debugger run last" })
 map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
-map("n", "<leader>ts", function()
-  local current_status = vim.o.laststatus
-  if current_status == 3 then
-    vim.o.laststatus = 0
-    vim.notify "Status line hidden"
-  else
-    vim.o.laststatus = 3
-    vim.notify "Status line shown"
-  end
-end, { desc = "Toggle Status Line" })
-
-map("n", "<leader>tt", function()
-  vim.opt.showtabline = vim.opt.showtabline == 0 and 1 or 0
-  vim.notify "Tabline toggled"
-end, { desc = "Toggle Tabline" })
+map("n", "<leader>ts", "<cmd>")
 
 function _G.set_terminal_keymaps()
   local opts = { buffer = 0 }
@@ -46,3 +32,21 @@ function _G.set_terminal_keymaps()
   map("t", "<C-l>", [[<Cmd>wincmd l<CR>]], opts)
   map("t", "<C-w>", [[<C-\><C-n><C-w>]], opts)
 end
+
+-- smart-splits nvim mappings
+local smart_splits = require "smart-splits"
+map("n", "<A-h>", smart_splits.resize_left)
+map("n", "<A-j>", smart_splits.resize_down)
+map("n", "<A-k>", smart_splits.resize_up)
+map("n", "<A-l>", smart_splits.resize_right)
+
+map("n", "<C-h>", smart_splits.move_cursor_left)
+map("n", "<C-j>", smart_splits.move_cursor_down)
+map("n", "<C-k>", smart_splits.move_cursor_up)
+map("n", "<C-l>", smart_splits.move_cursor_right)
+map("n", "<C-\\>", smart_splits.move_cursor_previous)
+
+map("n", "<leader><leader>h", smart_splits.swap_buf_left)
+map("n", "<leader><leader>j", smart_splits.swap_buf_down)
+map("n", "<leader><leader>k", smart_splits.swap_buf_up)
+map("n", "<leader><leader>l", smart_splits.swap_buf_right)

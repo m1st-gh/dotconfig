@@ -10,6 +10,7 @@ return {
       require "configs.lspconfig"
     end,
   },
+  { "mrjones2014/smart-splits.nvim", lazy = false },
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
@@ -23,4 +24,5 @@ return {
       },
     },
   },
+  {},
 }
