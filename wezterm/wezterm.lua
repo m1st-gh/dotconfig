@@ -6,9 +6,19 @@ local act = wezterm.action
 -- Your existing WezTerm configuration (add it here)
 wezterm.on("toggle-tabbar", function(window, _)
 	local overrides = window:get_config_overrides() or {}
-	overrides.enable_tab_bar = not overrides.enable_tab_bar
+
+	if not first_tab_toggle_done then
+		-- First press in this session: always hide
+		overrides.enable_tab_bar = false
+		First_tab_toggle_done = true -- Mark first press as done for this session
+	else
+		-- Subsequent presses: toggle normally
+		overrides.enable_tab_bar = not overrides.enable_tab_bar
+	end
+
 	window:set_config_overrides(overrides)
 end)
+
 config.window_padding = {
 	left = 0,
 	right = 0,
@@ -34,12 +44,12 @@ config.keys = {
 		mods = "LEADER|SHIFT",
 		action = act.SplitPane({ direction = "Right", size = { Percent = 50 } }),
 	},
-	{ key = "H", mods = "LEADER|SHIFT", action = act.AdjustPaneSize({ "Left", 2 }) },
-	{ key = "J", mods = "LEADER|SHIFT", action = act.AdjustPaneSize({ "Down", 2 }) },
-	{ key = "K", mods = "LEADER|SHIFT", action = act.AdjustPaneSize({ "Up", 2 }) },
-	{ key = "L", mods = "LEADER|SHIFT", action = act.AdjustPaneSize({ "Right", 2 }) },
+	{ key = "H", mods = "LEADER|SHIFT", action = act.AdjustPaneSize({ "Left", 1 }) },
+	{ key = "J", mods = "LEADER|SHIFT", action = act.AdjustPaneSize({ "Down", 1 }) },
+	{ key = "K", mods = "LEADER|SHIFT", action = act.AdjustPaneSize({ "Up", 1 }) },
+	{ key = "L", mods = "LEADER|SHIFT", action = act.AdjustPaneSize({ "Right", 1 }) },
 	{ key = "X", mods = "LEADER|SHIFT", action = act.CloseCurrentPane({ confirm = true }) },
-	{ key = "-", mods = "LEADER", action = act.TogglePaneZoomState },
+	{ key = "Q", mods = "LEADER|SHIFT", action = act.CloseCurrentTab({ confirm = true }) },
 	{ key = "q", mods = "LEADER", action = act.CloseCurrentPane({ confirm = true }) },
 	{ key = "x", mods = "LEADER", action = act.CloseCurrentTab({ confirm = true }) },
 	{ key = "c", mods = "LEADER", action = act.SpawnTab("DefaultDomain") },
@@ -64,6 +74,9 @@ config.keys = {
 	{ key = "8", mods = "ALT", action = act.ActivateTab(7) },
 	{ key = "9", mods = "ALT", action = act.ActivateTab(8) },
 	{ key = "0", mods = "ALT", action = act.ActivateTab(9) },
+	{ key = "[", mods = "LEADER", action = act.ActivateCopyMode },
+	{ key = "c", mods = "CTRL|SHIFT", action = act.CopyTo("ClipboardAndPrimarySelection") },
+	{ key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
 }
 config.font = wezterm.font({ family = "FiraCode Nerd Font Mono" })
 config.font_size = 14
