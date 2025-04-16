@@ -28,9 +28,11 @@ require("lazy").setup({
 -- load theme
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")
+dofile(vim.g.base46_cache .. "dap")
 
 require "options"
 require "nvchad.autocmds"
+require("base46").get_integration "dap"
 
 vim.schedule(function()
   require "mappings"
