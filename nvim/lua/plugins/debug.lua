@@ -29,9 +29,21 @@ return {
   },
   {
     "rcarriga/nvim-dap-ui",
-    dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "nvim-neotest/nvim-nio",
+      "theHamsta/nvim-dap-virtual-text",
+      "mfussenegger/nvim-dap-python",
+    },
     config = function()
       require("dapui").setup()
     end,
+  },
+  {
+    "theHamsta/nvim-dap-virtual-text",
+    config = true,
+    dependencies = {
+      "mfussenegger/nvim-dap",
+    },
   },
 }

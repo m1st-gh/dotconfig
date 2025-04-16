@@ -75,7 +75,7 @@ config.keys = {
 	{ key = "9", mods = "ALT", action = act.ActivateTab(8) },
 	{ key = "0", mods = "ALT", action = act.ActivateTab(9) },
 	{ key = "[", mods = "LEADER", action = act.ActivateCopyMode },
-	{ key = "c", mods = "CTRL|SHIFT", action = act.CopyTo("ClipboardAndPrimarySelection") },
+	{ key = "c", mods = "CTRL|SHIFT", action = act.CopyTo("Clipboard") },
 	{ key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
 }
 config.font = wezterm.font({ family = "FiraCode Nerd Font Mono" })
