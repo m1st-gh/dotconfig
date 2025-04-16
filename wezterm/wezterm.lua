@@ -3,20 +3,12 @@ local smart_splits = wezterm.plugin.require("https://github.com/mrjones2014/smar
 local config = wezterm.config_builder()
 local act = wezterm.action
 
--- Your existing WezTerm configuration (add it here)
 wezterm.on("toggle-tabbar", function(window, _)
 	local overrides = window:get_config_overrides() or {}
-
-	if not first_tab_toggle_done then
-		-- First press in this session: always hide
-		overrides.enable_tab_bar = false
-		First_tab_toggle_done = true -- Mark first press as done for this session
-	else
-		-- Subsequent presses: toggle normally
-		overrides.enable_tab_bar = not overrides.enable_tab_bar
-	end
-
+	local current_state = window:get_config_overrides().enable_tab_bar
+	overrides.enable_tab_bar = not current_state
 	window:set_config_overrides(overrides)
+	return true
 end)
 
 config.window_padding = {
@@ -25,8 +17,9 @@ config.window_padding = {
 	top = 0,
 	bottom = 0,
 }
+
 config.adjust_window_size_when_changing_font_size = false
-config.window_close_confirmation = "NeverPrompt"
+config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.inactive_pane_hsb = {
 	saturation = 1,
 	brightness = 1,
