@@ -24,5 +24,16 @@ return {
       },
     },
   },
-  {},
+  {
+    "shortcuts/no-neck-pain.nvim",
+    version = "*",
+    lazy = false, -- Keeping lazy=false as in your original snippet
+    config = function()
+      -- Call the plugin's setup function with your options
+      -- The structure below matches the wiki's documentation
+      require("no-neck-pain").setup {
+        width = 160,
+      }
+    end,
+  },
 }

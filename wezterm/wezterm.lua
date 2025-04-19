@@ -5,8 +5,16 @@ local act = wezterm.action
 
 wezterm.on("toggle-tabbar", function(window, _)
 	local overrides = window:get_config_overrides() or {}
-	local current_state = window:get_config_overrides().enable_tab_bar
-	overrides.enable_tab_bar = not current_state
+	local current_override_state = overrides.enable_tab_bar
+
+	local new_state
+	if current_override_state == nil then
+		new_state = false
+	else
+		new_state = not current_override_state
+	end
+
+	overrides.enable_tab_bar = new_state
 	window:set_config_overrides(overrides)
 	return true
 end)
@@ -72,7 +80,7 @@ config.keys = {
 	{ key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
 }
 config.font = wezterm.font({ family = "FiraCode Nerd Font Mono" })
-config.font_size = 14
+config.font_size = 12.5
 config.color_scheme = "tokyonight"
 config.automatically_reload_config = true
 config.status_update_interval = 1000
