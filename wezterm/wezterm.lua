@@ -19,12 +19,12 @@ wezterm.on("toggle-tabbar", function(window, _)
 	return true
 end)
 
-config.window_padding = {
-	left = 0,
-	right = 0,
-	top = 0,
-	bottom = 0,
-}
+-- config.window_padding = {
+-- 	left =
+-- 	right = 0,
+-- 	top = 0,
+-- 	bottom = 0,
+-- }
 
 config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
@@ -57,6 +57,7 @@ config.keys = {
 	{ key = "o", mods = "LEADER", action = act.ActivatePaneDirection("Next") },
 	{ key = "f", mods = "LEADER", action = act.ToggleFullScreen },
 	{ key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
+	{ key = "p", mods = "LEADER", action = act.ActivateCommandPalette },
 
 	-- Global bindings
 	{ key = "\\", mods = "CTRL", action = act.ActivatePaneDirection("Prev") },
@@ -79,8 +80,8 @@ config.keys = {
 	{ key = "c", mods = "CTRL|SHIFT", action = act.CopyTo("Clipboard") },
 	{ key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
 }
-config.font = wezterm.font({ family = "FiraCode Nerd Font Mono" })
-config.font_size = 12.5
+config.font = wezterm.font({ family = "JetBrainsMono NF" })
+config.font_size = 12
 config.color_scheme = "tokyonight"
 config.automatically_reload_config = true
 config.status_update_interval = 1000
