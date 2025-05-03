@@ -5,6 +5,17 @@ return {
     opts = require "configs.conform",
   },
   {
+    ft = "quarto",
+    "quarto-dev/quarto-nvim",
+    dependencies = {
+      "jmbuhr/otter.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+  },
+  {
+    "jmbuhr/otter.nvim",
+  },
+  {
     "neovim/nvim-lspconfig",
     config = function()
       require "configs.lspconfig"
@@ -27,10 +38,8 @@ return {
   {
     "shortcuts/no-neck-pain.nvim",
     version = "*",
-    lazy = false, -- Keeping lazy=false as in your original snippet
+    lazy = false,
     config = function()
-      -- Call the plugin's setup function with your options
-      -- The structure below matches the wiki's documentation
       require("no-neck-pain").setup {
         width = 160,
       }

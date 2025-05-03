@@ -4,6 +4,23 @@ require "nvchad.mappings"
 local chadrc = require "chadrc"
 local map = vim.keymap.set
 
+-- Define the toggle function
+-- Make it global (_G) so the mapping can easily find it,
+-- or return it from the module if you prefer more structured code.
+function _G.ToggleLocalSpellUS()
+  -- Check the current local value of the 'spell' option
+  if vim.opt_local.spell:get() then
+    -- If spell is currently ON for this buffer, turn it OFF
+    vim.opt_local.spell = false
+    vim.notify("Local spell check OFF", vim.log.levels.INFO)
+  else
+    -- If spell is currently OFF, set language and turn it ON
+    vim.opt_local.spelllang = "en_us" -- Set language to US English
+    vim.opt_local.spell = true -- Enable spell checking locally
+    vim.notify("Local spell check ON (en_us)", vim.log.levels.INFO)
+  end
+end
+
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
 map("n", "<Leader>dl", "<cmd>lua require'dap'.step_into()<CR>", { desc = "Debugger step into" })
@@ -11,6 +28,14 @@ map("n", "<Leader>dj", "<cmd>lua require'dap'.step_over()<CR>", { desc = "Debugg
 map("n", "<Leader>dk", "<cmd>lua require'dap'.step_out()<CR>", { desc = "Debugger step out" })
 map("n", "<Leader>dc", "<cmd>lua require'dap'.continue()<CR>", { desc = "Debugger continue" })
 map("n", "<Leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<CR>", { desc = "Debugger toggle breakpoint" })
+
+-- *** Replace your old <Leader>us mapping with this one ***
+-- map("n", "<Leader>us", "<cmd>setspell local") -- Remove or comment out this line
+map("n", "<Leader>us", _G.ToggleLocalSpellUS, { desc = "Toggle local spell check (en_us)" })
+-- Alternatively, you can call it explicitly:
+-- map("n", "<Leader>us", "<cmd>lua _G.ToggleLocalSpellUS()<CR>", { desc = "Toggle local spell check (en_us)" })
+-- Using the function reference directly (as above) is often preferred in Lua mappings.
+
 map(
   "n",
   "<Leader>dd",
@@ -20,7 +45,7 @@ map(
 map("n", "<Leader>de", "<cmd>lua require'dap'.terminate()<CR>", { desc = "Debugger reset" })
 map("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Debugger run last" })
 map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
-map("n", "<leader>ts", "<cmd>")
+map("n", "<leader>ts", "<cmd>") -- This mapping seems incomplete, might want to finish it?
 
 function _G.set_terminal_keymaps()
   local opts = { buffer = 0 }
