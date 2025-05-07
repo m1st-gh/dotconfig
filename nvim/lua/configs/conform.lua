@@ -7,6 +7,8 @@ local options = {
     c = { "clang-format" },
     cpp = { "clang-format" },
     go = { "gofumpt" },
+    javascript = { "prettier" },
+    typescript = { "prettier" },
   },
 
   format_on_save = {
