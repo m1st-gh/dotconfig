@@ -2,6 +2,15 @@ require "nvchad.mappings"
 
 local map = vim.keymap.set
 
+local function dap_restart()
+  local dap = require("dap")
+  if dap.restart then
+    dap.restart()
+  else
+    dap.terminate()
+    vim.defer_fn(function() dap.continue() end, 100)
+  end
+end
 -- Toggle local spell check (en_us)
 function _G.ToggleLocalSpellUS()
   if vim.opt_local.spell:get() then
@@ -40,6 +49,21 @@ function ToggleStatusline()
     statusline_visible = true
   end
 end
+-- Toggle all LSP diagnostics (virtual text, signs, underline)
+local diagnostics_enabled = true
+function ToggleLspDiagnostics()
+  diagnostics_enabled = not diagnostics_enabled
+  vim.diagnostic.config({
+    virtual_text = diagnostics_enabled,
+    signs = diagnostics_enabled,
+    underline = diagnostics_enabled,
+    update_in_insert = diagnostics_enabled,
+  })
+  vim.notify(
+    "LSP diagnostics " .. (diagnostics_enabled and "enabled" or "disabled"),
+    vim.log.levels.INFO
+  )
+end
 
 -- General mappings
 map("n", ";", ":", { desc = "CMD enter command mode" })
@@ -48,6 +72,7 @@ map("n", "<Leader>uz", _G.ToggleLocalSpellUS, { desc = "Toggle local spell check
 map("n", "<leader>un", "<cmd>NoNeckPain<CR>", { desc = "Toggle center" })
 map("n", "<leader>us", ToggleStatusline, { desc = "Toggle statusline" })
 map("n", "<leader>uv", ToggleLspVirtualText, { desc = "Toggle LSP virtual text" })
+map("n", "<leader>ud", ToggleLspDiagnostics, { desc = "Toggle LSP diagnostics" })
 
 -- Debugger mappings (DAP + Telescope)
 map("n", "<leader>dc", function()
@@ -75,15 +100,6 @@ map("n", "<F9>", function() require("dap").toggle_breakpoint() end, { desc = "De
 map("n", "<F10>", function() require("dap").step_over() end, { desc = "Debugger step over" })
 map("n", "<F11>", function() require("dap").step_into() end, { desc = "Debugger step into" })
 
-local function dap_restart()
-  local dap = require("dap")
-  if dap.restart then
-    dap.restart()
-  else
-    dap.terminate()
-    vim.defer_fn(function() dap.continue() end, 100)
-  end
-end
 map("n", "<C-F5>", dap_restart, { desc = "Debugger restart" })
 map("n", "<C-S-F5>", dap_restart, { desc = "Debugger restart" })
 

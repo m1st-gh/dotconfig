@@ -86,7 +86,7 @@ config.keys = {
 	{ key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
 }
 config.font = wezterm.font({ family = "JetBrainsMono NF" })
-config.font_size = 12
+config.font_size = 13
 config.color_scheme = "tokyonight"
 config.automatically_reload_config = true
 config.status_update_interval = 1000

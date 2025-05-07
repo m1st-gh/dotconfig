@@ -11,6 +11,7 @@ M.base46 = {
   hl_override = {
     Comment = { italic = true },
     ["@comment"] = { italic = true },
+    
   },
   integrations = {
     "dap",
@@ -21,8 +22,14 @@ M.nvdash = { load_on_startup = true }
 M.ui = {
   tabufline = {
     enabled = true,
-    lazyload = false, -- default value
+    lazyload = false,
   },
+     cheatsheet = {
+     theme = "grid", -- simple/grid
+     excluded_groups = {}
+   },
 }
+
+M.mason = { pkgs = {"debugpy"}}
 
 return M

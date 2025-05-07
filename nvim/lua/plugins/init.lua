@@ -16,6 +16,7 @@ return {
   -- No Neck Pain
   {
     "shortcuts/no-neck-pain.nvim",
+    cmd = {"NoNeckPain"},
     config = function()
       require("no-neck-pain").setup {
         width = 160,
@@ -50,6 +51,9 @@ return {
         "html",
         "css",
         "python",
+        "json",
+        "javascript",
+        "typescript",
       },
     },
   },
@@ -61,5 +65,5 @@ return {
     config = function()
       require("ufo").setup()
     end,
-  },
+  }
 }
