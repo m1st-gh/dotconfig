@@ -3,12 +3,14 @@ require "nvchad.mappings"
 local map = vim.keymap.set
 
 local function dap_restart()
-  local dap = require("dap")
+  local dap = require "dap"
   if dap.restart then
     dap.restart()
   else
     dap.terminate()
-    vim.defer_fn(function() dap.continue() end, 100)
+    vim.defer_fn(function()
+      dap.continue()
+    end, 100)
   end
 end
 -- Toggle local spell check (en_us)
@@ -28,24 +30,29 @@ local lsp_virtual_text_enabled = true
 function ToggleLspVirtualText()
   lsp_virtual_text_enabled = not lsp_virtual_text_enabled
   vim.diagnostic.config { virtual_text = lsp_virtual_text_enabled }
-  vim.notify(
-    "LSP virtual text " .. (lsp_virtual_text_enabled and "enabled" or "disabled"),
-    vim.log.levels.INFO
-  )
+  vim.notify("LSP virtual text " .. (lsp_virtual_text_enabled and "enabled" or "disabled"), vim.log.levels.INFO)
 end
 
 -- Toggle statusline
 local original_statusline, original_laststatus, statusline_visible = nil, nil, true
 function ToggleStatusline()
   if statusline_visible then
-    if not original_statusline then original_statusline = vim.o.statusline end
-    if not original_laststatus then original_laststatus = vim.o.laststatus end
+    if not original_statusline then
+      original_statusline = vim.o.statusline
+    end
+    if not original_laststatus then
+      original_laststatus = vim.o.laststatus
+    end
     vim.o.statusline = ""
     vim.o.laststatus = 0
     statusline_visible = false
   else
-    if original_statusline then vim.o.statusline = original_statusline end
-    if original_laststatus then vim.o.laststatus = original_laststatus end
+    if original_statusline then
+      vim.o.statusline = original_statusline
+    end
+    if original_laststatus then
+      vim.o.laststatus = original_laststatus
+    end
     statusline_visible = true
   end
 end
@@ -53,17 +60,55 @@ end
 local diagnostics_enabled = true
 function ToggleLspDiagnostics()
   diagnostics_enabled = not diagnostics_enabled
-  vim.diagnostic.config({
+  vim.diagnostic.config {
     virtual_text = diagnostics_enabled,
     signs = diagnostics_enabled,
     underline = diagnostics_enabled,
     update_in_insert = diagnostics_enabled,
-  })
-  vim.notify(
-    "LSP diagnostics " .. (diagnostics_enabled and "enabled" or "disabled"),
-    vim.log.levels.INFO
-  )
+  }
+  vim.notify("LSP diagnostics " .. (diagnostics_enabled and "enabled" or "disabled"), vim.log.levels.INFO)
 end
+
+local original_scrolloff = vim.o.scrolloff
+local original_sidescrolloff = vim.o.sidescrolloff
+local center_cursor_enabled = false
+
+function _G.ToggleCenterCursor()
+  if center_cursor_enabled then
+    -- restore
+    vim.o.scrolloff = original_scrolloff
+    vim.o.sidescrolloff = original_sidescrolloff
+    vim.notify("Center cursor OFF", vim.log.levels.INFO)
+    center_cursor_enabled = false
+  else
+    -- save current (in case they changed it elsewhere)
+    original_scrolloff = vim.o.scrolloff
+    original_sidescrolloff = vim.o.sidescrolloff
+    vim.o.scrolloff = 999
+    vim.o.sidescrolloff = 999
+    vim.notify("Center cursor ON", vim.log.levels.INFO)
+    center_cursor_enabled = true
+  end
+end
+
+local default_tabline = vim.o.tabline
+local default_showtabline = vim.o.showtabline
+
+_G.ToggleTabufline = (function()
+  local enabled = true
+  return function()
+    if enabled then
+      vim.o.showtabline = 0
+      vim.notify("Tabufline hidden", vim.log.levels.INFO)
+    else
+      vim.o.showtabline = default_showtabline
+      vim.o.tabline = default_tabline
+      vim.notify("Tabufline shown", vim.log.levels.INFO)
+    end
+    enabled = not enabled
+    vim.cmd "redrawtabline"
+  end
+end)()
 
 -- General mappings
 map("n", ";", ":", { desc = "CMD enter command mode" })
@@ -73,6 +118,16 @@ map("n", "<leader>un", "<cmd>NoNeckPain<CR>", { desc = "Toggle center" })
 map("n", "<leader>us", ToggleStatusline, { desc = "Toggle statusline" })
 map("n", "<leader>uv", ToggleLspVirtualText, { desc = "Toggle LSP virtual text" })
 map("n", "<leader>ud", ToggleLspDiagnostics, { desc = "Toggle LSP diagnostics" })
+map("n", "<leader>uc", _G.ToggleCenterCursor, { desc = "Toggle center cursor" })
+map("n", "<leader>ut", _G.ToggleTabufline, { desc = "Toggle tabufline" })
+map("n", "<leader>fd", function()
+  -- Prompt for directory
+  vim.ui.input({ prompt = "Directory to search: ", completion = "dir" }, function(input)
+    if input and #input > 0 then
+      require("telescope.builtin").find_files { cwd = input }
+    end
+  end)
+end, { desc = "telescope find files in a directory" })
 
 -- Debugger mappings (DAP + Telescope)
 map("n", "<leader>dc", function()
@@ -81,50 +136,104 @@ end, { desc = "Debugger start/continue" })
 map("n", "<leader>dB", function()
   require("telescope").extensions.dap.list_breakpoints()
 end, { desc = "Debugger breakpoints" })
-map("n", "<Leader>dl", function() require("dap").step_into() end, { desc = "Debugger step into" })
-map("n", "<Leader>dj", function() require("dap").step_over() end, { desc = "Debugger step over" })
-map("n", "<Leader>dk", function() require("dap").step_out() end, { desc = "Debugger step out" })
-map("n", "<Leader>db", function() require("dap").toggle_breakpoint() end, { desc = "Debugger toggle breakpoint" })
+map("n", "<Leader>dl", function()
+  require("dap").step_into()
+end, { desc = "Debugger step into" })
+map("n", "<Leader>dj", function()
+  require("dap").step_over()
+end, { desc = "Debugger step over" })
+map("n", "<Leader>dk", function()
+  require("dap").step_out()
+end, { desc = "Debugger step out" })
+map("n", "<Leader>db", function()
+  require("dap").toggle_breakpoint()
+end, { desc = "Debugger toggle breakpoint" })
 map("n", "<Leader>dd", function()
-  require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+  require("dap").set_breakpoint(vim.fn.input "Breakpoint condition: ")
 end, { desc = "Debugger set conditional breakpoint" })
-map("n", "<Leader>de", function() require("dap").terminate() end, { desc = "Debugger stop" })
-map("n", "<Leader>dr", function() require("dap").run_last() end, { desc = "Debugger run last" })
+map("n", "<Leader>de", function()
+  require("dap").terminate()
+end, { desc = "Debugger stop" })
+map("n", "<Leader>dr", function()
+  require("dap").run_last()
+end, { desc = "Debugger run last" })
 
 -- F-key Debugger mappings
 map("n", "<F5>", function()
   require("telescope").extensions.dap.configurations()
 end, { desc = "Debugger start/continue" })
-map("n", "<S-F5>", function() require("dap").terminate() end, { desc = "Debugger stop" })
-map("n", "<F9>", function() require("dap").toggle_breakpoint() end, { desc = "Debugger toggle breakpoint" })
-map("n", "<F10>", function() require("dap").step_over() end, { desc = "Debugger step over" })
-map("n", "<F11>", function() require("dap").step_into() end, { desc = "Debugger step into" })
+map("n", "<S-F5>", function()
+  require("dap").terminate()
+end, { desc = "Debugger stop" })
+map("n", "<F9>", function()
+  require("dap").toggle_breakpoint()
+end, { desc = "Debugger toggle breakpoint" })
+map("n", "<F10>", function()
+  require("dap").step_over()
+end, { desc = "Debugger step over" })
+map("n", "<F11>", function()
+  require("dap").step_into()
+end, { desc = "Debugger step into" })
 
 map("n", "<C-F5>", dap_restart, { desc = "Debugger restart" })
 map("n", "<C-S-F5>", dap_restart, { desc = "Debugger restart" })
 
 -- Smart-splits mappings
-map("n", "<A-h>", function() require("smart-splits").resize_left() end, { desc = "Smart-splits resize left" })
-map("n", "<A-j>", function() require("smart-splits").resize_down() end, { desc = "Smart-splits resize down" })
-map("n", "<A-k>", function() require("smart-splits").resize_up() end, { desc = "Smart-splits resize up" })
-map("n", "<A-l>", function() require("smart-splits").resize_right() end, { desc = "Smart-splits resize right" })
+map("n", "<A-h>", function()
+  require("smart-splits").resize_left()
+end, { desc = "Smart-splits resize left" })
+map("n", "<A-j>", function()
+  require("smart-splits").resize_down()
+end, { desc = "Smart-splits resize down" })
+map("n", "<A-k>", function()
+  require("smart-splits").resize_up()
+end, { desc = "Smart-splits resize up" })
+map("n", "<A-l>", function()
+  require("smart-splits").resize_right()
+end, { desc = "Smart-splits resize right" })
 
-map("n", "<C-h>", function() require("smart-splits").move_cursor_left() end, { desc = "Smart-splits move cursor left" })
-map("n", "<C-j>", function() require("smart-splits").move_cursor_down() end, { desc = "Smart-splits move cursor down" })
-map("n", "<C-k>", function() require("smart-splits").move_cursor_up() end, { desc = "Smart-splits move cursor up" })
-map("n", "<C-l>", function() require("smart-splits").move_cursor_right() end, { desc = "Smart-splits move cursor right" })
-map("n", "<C-\\>", function() require("smart-splits").move_cursor_previous() end, { desc = "Smart-splits move cursor previous" })
+map("n", "<C-h>", function()
+  require("smart-splits").move_cursor_left()
+end, { desc = "Smart-splits move cursor left" })
+map("n", "<C-j>", function()
+  require("smart-splits").move_cursor_down()
+end, { desc = "Smart-splits move cursor down" })
+map("n", "<C-k>", function()
+  require("smart-splits").move_cursor_up()
+end, { desc = "Smart-splits move cursor up" })
+map("n", "<C-l>", function()
+  require("smart-splits").move_cursor_right()
+end, { desc = "Smart-splits move cursor right" })
+map("n", "<C-\\>", function()
+  require("smart-splits").move_cursor_previous()
+end, { desc = "Smart-splits move cursor previous" })
 
-map("n", "<leader><leader>h", function() require("smart-splits").swap_buf_left() end, { desc = "Smart-splits swap buffer left" })
-map("n", "<leader><leader>j", function() require("smart-splits").swap_buf_down() end, { desc = "Smart-splits swap buffer down" })
-map("n", "<leader><leader>k", function() require("smart-splits").swap_buf_up() end, { desc = "Smart-splits swap buffer up" })
-map("n", "<leader><leader>l", function() require("smart-splits").swap_buf_right() end, { desc = "Smart-splits swap buffer right" })
+map("n", "<leader><leader>h", function()
+  require("smart-splits").swap_buf_left()
+end, { desc = "Smart-splits swap buffer left" })
+map("n", "<leader><leader>j", function()
+  require("smart-splits").swap_buf_down()
+end, { desc = "Smart-splits swap buffer down" })
+map("n", "<leader><leader>k", function()
+  require("smart-splits").swap_buf_up()
+end, { desc = "Smart-splits swap buffer up" })
+map("n", "<leader><leader>l", function()
+  require("smart-splits").swap_buf_right()
+end, { desc = "Smart-splits swap buffer right" })
 
 -- UFO fold mappings
-map("n", "zR", function() require("ufo").openAllFolds() end, { desc = "Folds open all" })
-map("n", "zM", function() require("ufo").closeAllFolds() end, { desc = "Folds close all" })
-map("n", "zr", function() require("ufo").openFoldsExceptKinds() end, { desc = "Folds open except kinds" })
-map("n", "zm", function() require("ufo").closeFoldsWith() end, { desc = "Folds close with" })
+map("n", "zR", function()
+  require("ufo").openAllFolds()
+end, { desc = "Folds open all" })
+map("n", "zM", function()
+  require("ufo").closeAllFolds()
+end, { desc = "Folds close all" })
+map("n", "zr", function()
+  require("ufo").openFoldsExceptKinds()
+end, { desc = "Folds open except kinds" })
+map("n", "zm", function()
+  require("ufo").closeFoldsWith()
+end, { desc = "Folds close with" })
 
 -- Terminal keymaps (set per terminal buffer)
 function _G.set_terminal_keymaps()

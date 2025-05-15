@@ -6,7 +6,7 @@
 local M = {}
 
 M.base46 = {
-  theme = "tokyonight",
+  theme = "onedark",
 
   hl_override = {
     Comment = { italic = true },
@@ -23,12 +23,12 @@ M.ui = {
     enabled = true,
     lazyload = false,
   },
-     cheatsheet = {
-     theme = "grid", -- simple/grid
-     excluded_groups = {}
-   },
+  cheatsheet = {
+    theme = "grid", -- simple/grid
+    excluded_groups = {},
+  },
 }
 
-M.mason = { pkgs = {"debugpy"}}
+M.mason = { pkgs = { "debugpy" } }
 
 return M
