@@ -1,135 +1,53 @@
 require "nvchad.mappings"
 
 local map = vim.keymap.set
+local nomap = vim.keymap.del
+local helpers = require "mapping_helpers"
 
-local function dap_restart()
-  local dap = require "dap"
-  if dap.restart then
-    dap.restart()
-  else
-    dap.terminate()
-    vim.defer_fn(function()
-      dap.continue()
-    end, 100)
-  end
-end
--- Toggle local spell check (en_us)
-function _G.ToggleLocalSpellUS()
-  if vim.opt_local.spell:get() then
-    vim.opt_local.spell = false
-    vim.notify("Local spell check OFF", vim.log.levels.INFO)
-  else
-    vim.opt_local.spelllang = "en_us"
-    vim.opt_local.spell = true
-    vim.notify("Local spell check ON (en_us)", vim.log.levels.INFO)
-  end
-end
+-- Make global functions accessible
+_G.ToggleLocalSpellUS = helpers.toggle_local_spell_us
+_G.ToggleCenterCursor = helpers.toggle_center_cursor
+_G.ToggleTabufline = helpers.toggle_tabufline
 
--- Toggle LSP virtual text
-local lsp_virtual_text_enabled = true
-function ToggleLspVirtualText()
-  lsp_virtual_text_enabled = not lsp_virtual_text_enabled
-  vim.diagnostic.config { virtual_text = lsp_virtual_text_enabled }
-  vim.notify("LSP virtual text " .. (lsp_virtual_text_enabled and "enabled" or "disabled"), vim.log.levels.INFO)
-end
+-----------------------------------------------------------
+-- Unmap specific keys
+-----------------------------------------------------------
+nomap("n", "<leader>v")
+nomap("n", "<leader>h")
+nomap("n", "<M-i>")
+nomap("n", "<M-v>")
 
--- Toggle statusline
-local original_statusline, original_laststatus, statusline_visible = nil, nil, true
-function ToggleStatusline()
-  if statusline_visible then
-    if not original_statusline then
-      original_statusline = vim.o.statusline
-    end
-    if not original_laststatus then
-      original_laststatus = vim.o.laststatus
-    end
-    vim.o.statusline = ""
-    vim.o.laststatus = 0
-    statusline_visible = false
-  else
-    if original_statusline then
-      vim.o.statusline = original_statusline
-    end
-    if original_laststatus then
-      vim.o.laststatus = original_laststatus
-    end
-    statusline_visible = true
-  end
-end
--- Toggle all LSP diagnostics (virtual text, signs, underline)
-local diagnostics_enabled = true
-function ToggleLspDiagnostics()
-  diagnostics_enabled = not diagnostics_enabled
-  vim.diagnostic.config {
-    virtual_text = diagnostics_enabled,
-    signs = diagnostics_enabled,
-    underline = diagnostics_enabled,
-    update_in_insert = diagnostics_enabled,
-  }
-  vim.notify("LSP diagnostics " .. (diagnostics_enabled and "enabled" or "disabled"), vim.log.levels.INFO)
-end
-
-local original_scrolloff = vim.o.scrolloff
-local original_sidescrolloff = vim.o.sidescrolloff
-local center_cursor_enabled = false
-
-function _G.ToggleCenterCursor()
-  if center_cursor_enabled then
-    -- restore
-    vim.o.scrolloff = original_scrolloff
-    vim.o.sidescrolloff = original_sidescrolloff
-    vim.notify("Center cursor OFF", vim.log.levels.INFO)
-    center_cursor_enabled = false
-  else
-    -- save current (in case they changed it elsewhere)
-    original_scrolloff = vim.o.scrolloff
-    original_sidescrolloff = vim.o.sidescrolloff
-    vim.o.scrolloff = 999
-    vim.o.sidescrolloff = 999
-    vim.notify("Center cursor ON", vim.log.levels.INFO)
-    center_cursor_enabled = true
-  end
-end
-
-local default_tabline = vim.o.tabline
-local default_showtabline = vim.o.showtabline
-
-_G.ToggleTabufline = (function()
-  local enabled = true
-  return function()
-    if enabled then
-      vim.o.showtabline = 0
-      vim.notify("Tabufline hidden", vim.log.levels.INFO)
-    else
-      vim.o.showtabline = default_showtabline
-      vim.o.tabline = default_tabline
-      vim.notify("Tabufline shown", vim.log.levels.INFO)
-    end
-    enabled = not enabled
-    vim.cmd "redrawtabline"
-  end
-end)()
-
+-----------------------------------------------------------
 -- General mappings
+-----------------------------------------------------------
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>", { desc = "Insert escape" })
-map("n", "<Leader>uz", _G.ToggleLocalSpellUS, { desc = "Toggle local spell check en_us" })
-map("n", "<leader>un", "<cmd>NoNeckPain<CR>", { desc = "Toggle center" })
-map("n", "<leader>us", ToggleStatusline, { desc = "Toggle statusline" })
-map("n", "<leader>uv", ToggleLspVirtualText, { desc = "Toggle LSP virtual text" })
-map("n", "<leader>ud", ToggleLspDiagnostics, { desc = "Toggle LSP diagnostics" })
-map("n", "<leader>uc", _G.ToggleCenterCursor, { desc = "Toggle center cursor" })
-map("n", "<leader>ut", _G.ToggleTabufline, { desc = "Toggle tabufline" })
-map("n", "<leader>fd", function()
-  -- Prompt for directory
-  vim.ui.input({ prompt = "Directory to search: ", completion = "dir" }, function(input)
-    if input and #input > 0 then
-      require("telescope.builtin").find_files { cwd = input }
-    end
-  end)
-end, { desc = "telescope find files in a directory" })
 
+-----------------------------------------------------------
+-- UI Toggles (u prefix)
+-----------------------------------------------------------
+map("n", "<Leader>uz", helpers.toggle_local_spell_us, { desc = "Toggle local spell check en_us" })
+map("n", "<leader>un", "<cmd>NoNeckPain<CR>", { desc = "Toggle center" })
+map("n", "<leader>us", helpers.toggle_statusline, { desc = "Toggle statusline" })
+map("n", "<leader>uv", helpers.toggle_lsp_virtual_text, { desc = "Toggle LSP virtual text" })
+map("n", "<leader>ud", helpers.toggle_lsp_diagnostics, { desc = "Toggle LSP diagnostics" })
+map("n", "<leader>uc", helpers.toggle_center_cursor, { desc = "Toggle center cursor" })
+map("n", "<leader>ub", helpers.toggle_tabufline, { desc = "Toggle tabufline" })
+map("n", "<leader>uZ", function()
+  vim.cmd "NoNeckPain"
+  helpers.toggle_statusline()
+  helpers.toggle_tabufline()
+end, { desc = "Toggle zen mode" })
+
+-----------------------------------------------------------
+-- Telescope
+-----------------------------------------------------------
+map("n", "<leader>fd", helpers.find_files_in_dir, { desc = "Telescope find files in a directory" })
+
+-----------------------------------------------------------
 -- Debugger mappings (DAP + Telescope)
+-----------------------------------------------------------
+-- Leader-based mappings
 map("n", "<leader>dc", function()
   require("telescope").extensions.dap.configurations()
 end, { desc = "Debugger start/continue" })
@@ -174,11 +92,13 @@ end, { desc = "Debugger step over" })
 map("n", "<F11>", function()
   require("dap").step_into()
 end, { desc = "Debugger step into" })
+map("n", "<C-F5>", helpers.dap_restart, { desc = "Debugger restart" })
+map("n", "<C-S-F5>", helpers.dap_restart, { desc = "Debugger restart" })
 
-map("n", "<C-F5>", dap_restart, { desc = "Debugger restart" })
-map("n", "<C-S-F5>", dap_restart, { desc = "Debugger restart" })
-
+-----------------------------------------------------------
 -- Smart-splits mappings
+-----------------------------------------------------------
+-- Resize
 map("n", "<A-h>", function()
   require("smart-splits").resize_left()
 end, { desc = "Smart-splits resize left" })
@@ -192,6 +112,7 @@ map("n", "<A-l>", function()
   require("smart-splits").resize_right()
 end, { desc = "Smart-splits resize right" })
 
+-- Movement
 map("n", "<C-h>", function()
   require("smart-splits").move_cursor_left()
 end, { desc = "Smart-splits move cursor left" })
@@ -208,6 +129,7 @@ map("n", "<C-\\>", function()
   require("smart-splits").move_cursor_previous()
 end, { desc = "Smart-splits move cursor previous" })
 
+-- Swap buffers
 map("n", "<leader><leader>h", function()
   require("smart-splits").swap_buf_left()
 end, { desc = "Smart-splits swap buffer left" })
@@ -221,7 +143,9 @@ map("n", "<leader><leader>l", function()
   require("smart-splits").swap_buf_right()
 end, { desc = "Smart-splits swap buffer right" })
 
+-----------------------------------------------------------
 -- UFO fold mappings
+-----------------------------------------------------------
 map("n", "zR", function()
   require("ufo").openAllFolds()
 end, { desc = "Folds open all" })
@@ -234,15 +158,3 @@ end, { desc = "Folds open except kinds" })
 map("n", "zm", function()
   require("ufo").closeFoldsWith()
 end, { desc = "Folds close with" })
-
--- Terminal keymaps (set per terminal buffer)
-function _G.set_terminal_keymaps()
-  local opts = { buffer = 0 }
-  map("t", "<esc>", [[<C-\><C-n>]], vim.tbl_extend("force", opts, { desc = "Terminal normal mode" }))
-  map("t", "jk", [[<C-\><C-n>]], vim.tbl_extend("force", opts, { desc = "Terminal normal mode jk" }))
-  map("t", "<C-h>", [[<Cmd>wincmd h<CR>]], vim.tbl_extend("force", opts, { desc = "Terminal window left" }))
-  map("t", "<C-j>", [[<Cmd>wincmd j<CR>]], vim.tbl_extend("force", opts, { desc = "Terminal window down" }))
-  map("t", "<C-k>", [[<Cmd>wincmd k<CR>]], vim.tbl_extend("force", opts, { desc = "Terminal window up" }))
-  map("t", "<C-l>", [[<Cmd>wincmd l<CR>]], vim.tbl_extend("force", opts, { desc = "Terminal window right" }))
-  map("t", "<C-w>", [[<C-\><C-n><C-w>]], vim.tbl_extend("force", opts, { desc = "Terminal window command" }))
-end
