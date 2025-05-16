@@ -27,6 +27,9 @@ M.ui = {
     theme = "grid", -- simple/grid
     excluded_groups = {},
   },
+  cmp = {
+    style = "flat_dark",
+  },
 }
 
 M.mason = { pkgs = { "debugpy" } }

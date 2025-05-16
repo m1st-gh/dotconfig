@@ -9,6 +9,7 @@ local options = {
     go = { "gofumpt" },
     javascript = { "prettier" },
     typescript = { "prettier" },
+    json = { "prettier" },
   },
 
   format_on_save = {
