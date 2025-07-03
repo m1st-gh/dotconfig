@@ -5,24 +5,13 @@ return {
     event = { "BufWritePre" },
     opts = require "configs.conform",
   },
-  -- {
-  --   "nvim-tree/nvim-tree.lua",
-  --   config = function()
-  --     require("nvim-tree").setup {
-  --       filters = {
-  --         dotfiles = true,
-  --         git_ignored = true,
-  --       },
-  --     }
-  --   end,
-  -- },
-
   -- LSP config
   {
     "neovim/nvim-lspconfig",
     config = function()
       require "configs.lspconfig"
     end,
+    lazy = false,
   },
 
   -- No Neck Pain

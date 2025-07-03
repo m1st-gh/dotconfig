@@ -32,11 +32,11 @@ end
 -- -----------------------------------------------------------------------------
 -- Font
 config.font = wezterm.font({ family = "JetBrainsMono NF" })
-config.font_size = 14
+config.font_size = 13
 
 -- Window Decorations and Padding
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
-config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
+-- config.window_padding = { left = 5, right = 5, top = 5, bottom = 5 }
 config.window_content_alignment = {
 	horizontal = "Center",
 	vertical = "Center",
@@ -125,23 +125,28 @@ config.keys = {
 
 	-- Pane Management
 	{
-		key = "\\",
+		key = "s",
 		mods = "LEADER",
 		action = act.SplitPane({ direction = "Down", size = { Percent = 50 } }),
 	},
 	{
-		key = "|",
-		mods = "LEADER|SHIFT",
+		key = "v",
+		mods = "LEADER",
 		action = act.SplitPane({ direction = "Right", size = { Percent = 50 } }),
+	},
+	{
+		key = "s",
+		mods = "LEADER|SHIFT",
+		action = act.SplitPane({ direction = "Up", size = { Percent = 50 } }),
+	},
+	{
+		key = "v",
+		mods = "LEADER|SHIFT",
+		action = act.SplitPane({ direction = "Left", size = { Percent = 50 } }),
 	},
 	{
 		key = "q", -- leader + q to close current pane (as requested, was already this)
 		mods = "LEADER",
-		action = act.CloseCurrentPane({ confirm = true }),
-	},
-	{
-		key = "X", -- Original: leader + SHIFT + X to close current pane
-		mods = "LEADER|SHIFT",
 		action = act.CloseCurrentPane({ confirm = true }),
 	},
 	{ key = "o", mods = "LEADER", action = act.ActivatePaneDirection("Next") },

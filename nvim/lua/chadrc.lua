@@ -11,6 +11,7 @@ M.base46 = {
   hl_override = {
     Comment = { italic = true },
     ["@comment"] = { italic = true },
+    ["@function"] = { italic = true },
   },
   integrations = {
     "dap",
@@ -22,10 +23,6 @@ M.ui = {
   tabufline = {
     enabled = true,
     lazyload = false,
-  },
-  cheatsheet = {
-    theme = "grid", -- simple/grid
-    excluded_groups = {},
   },
   cmp = {
     style = "flat_dark",
