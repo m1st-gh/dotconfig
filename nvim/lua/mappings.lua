@@ -48,52 +48,111 @@ map("n", "<leader>fd", helpers.find_files_in_dir, { desc = "Telescope find files
 -- Debugger mappings (DAP + Telescope)
 -----------------------------------------------------------
 -- Leader-based mappings
-map("n", "<leader>dc", function()
-  require("telescope").extensions.dap.configurations()
+map("n", "<leader>ds", function()
+  local dap = require "dap"
+  if dap.session() then
+    dap.continue()
+  else
+    require("telescope").extensions.dap.configurations()
+  end
 end, { desc = "Debugger start/continue" })
-map("n", "<leader>dB", function()
+
+map("n", "<leader>df", function()
   require("telescope").extensions.dap.list_breakpoints()
 end, { desc = "Debugger breakpoints" })
+
+map("n", "<leader>dc", function()
+  require("dap").clear_breakpoints()
+  print "All breakpoints cleared"
+end, { desc = "Debugger clear all breakpoints" })
+
 map("n", "<Leader>dl", function()
   require("dap").step_into()
 end, { desc = "Debugger step into" })
-map("n", "<Leader>dj", function()
-  require("dap").step_over()
-end, { desc = "Debugger step over" })
-map("n", "<Leader>dk", function()
-  require("dap").step_out()
-end, { desc = "Debugger step out" })
+
 map("n", "<Leader>db", function()
   require("dap").toggle_breakpoint()
 end, { desc = "Debugger toggle breakpoint" })
+
 map("n", "<Leader>dd", function()
   require("dap").set_breakpoint(vim.fn.input "Breakpoint condition: ")
 end, { desc = "Debugger set conditional breakpoint" })
+
 map("n", "<Leader>de", function()
   require("dap").terminate()
 end, { desc = "Debugger stop" })
+
 map("n", "<Leader>dr", function()
   require("dap").run_last()
 end, { desc = "Debugger run last" })
 
 -- F-key Debugger mappings
+-- F-key Debugger mappings
 map("n", "<F5>", function()
-  require("telescope").extensions.dap.configurations()
-end, { desc = "Debugger start/continue" })
+  local dap = require "dap"
+  if dap.session() then
+    dap.restart()
+  else
+    -- Load all configurations
+    require("dap.ext.vscode").load_launchjs(nil, {})
+
+    -- Sort configurations to put .vscode ones first
+    for ft, configs in pairs(dap.configurations) do
+      table.sort(configs, function(a, b)
+        local a_is_vscode = a.__vscode or false
+        local b_is_vscode = b.__vscode or false
+
+        if a_is_vscode and not b_is_vscode then
+          return true
+        elseif not a_is_vscode and b_is_vscode then
+          return false
+        else
+          return (a.name or "") < (b.name or "")
+        end
+      end)
+    end
+
+    require("telescope").extensions.dap.configurations()
+  end
+end, { desc = "Debugger start/restart" })
+
+map("n", "<F6>", function()
+  local dap = require "dap"
+  if dap.session() then
+    dap.continue()
+  else
+    print "No active debug session"
+  end
+end, { desc = "Debugger pause/continue" })
+
 map("n", "<S-F5>", function()
   require("dap").terminate()
 end, { desc = "Debugger stop" })
-map("n", "<F9>", function()
+
+map("n", "<F7>", function()
   require("dap").toggle_breakpoint()
 end, { desc = "Debugger toggle breakpoint" })
-map("n", "<F10>", function()
+
+map("n", "<F8>", function()
+  require("dap").set_breakpoint(vim.fn.input "Breakpoint condition: ")
+end, { desc = "Debugger set conditional breakpoint" })
+
+map("n", "<C-F7>", function()
+  require("dap").clear_breakpoints()
+  print "All breakpoints cleared"
+end, { desc = "Debugger clear all breakpoints" })
+
+map("n", "<F9>", function()
   require("dap").step_over()
 end, { desc = "Debugger step over" })
-map("n", "<F11>", function()
+
+map("n", "<F10>", function()
   require("dap").step_into()
 end, { desc = "Debugger step into" })
-map("n", "<C-F5>", helpers.dap_restart, { desc = "Debugger restart" })
-map("n", "<C-S-F5>", helpers.dap_restart, { desc = "Debugger restart" })
+
+map("n", "<F11>", function()
+  require("dap").step_out()
+end, { desc = "Debugger step out" })
 
 -----------------------------------------------------------
 -- Smart-splits mappings

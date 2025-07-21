@@ -38,7 +38,7 @@ return {
   -- Smart splits (always loaded)
   {
     "mrjones2014/smart-splits.nvim",
-    lazy = false, -- Only if you want it always loaded, otherwise remove this line
+    lazy = false,
   },
 
   -- Treesitter
@@ -65,6 +65,18 @@ return {
     dependencies = { "kevinhwang91/promise-async" },
     config = function()
       require("ufo").setup()
+    end,
+  },
+  {
+    "nvim-telescope/telescope-ui-select.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    init = function()
+      -- This runs before the plugin loads
+      vim.defer_fn(function()
+        if pcall(require, "telescope") then
+          require("telescope").load_extension "ui-select"
+        end
+      end, 50)
     end,
   },
 }

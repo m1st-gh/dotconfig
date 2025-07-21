@@ -36,7 +36,7 @@ config.font_size = 13
 
 -- Window Decorations and Padding
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
--- config.window_padding = { left = 5, right = 5, top = 5, bottom = 5 }
+config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 config.window_content_alignment = {
 	horizontal = "Center",
 	vertical = "Center",
@@ -51,7 +51,7 @@ config.inactive_pane_hsb = { saturation = 1, brightness = 1 }
 -- Cursor
 config.default_cursor_style = "BlinkingBlock" -- Explicitly set, common default
 config.cursor_blink_rate = 500 -- Blink every 0.5 seconds (500ms)
-config.animation_fps = 240
+config.animation_fps = 1
 config.cursor_blink_ease_in = "Linear"
 config.cursor_blink_ease_out = "Linear"
 

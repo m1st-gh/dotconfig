@@ -1,10 +1,10 @@
 return {
   {
-  "nvim-telescope/telescope-dap.nvim",
-  dependencies = { "nvim-telescope/telescope.nvim" },
-  config = function()
-    require("telescope").load_extension("dap")
-  end,
+    "nvim-telescope/telescope-dap.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    config = function()
+      require("telescope").load_extension "dap"
+    end,
   },
   -- nvim-dap core: load on buffer read
   {
@@ -55,6 +55,14 @@ return {
     dependencies = { "mfussenegger/nvim-dap" },
     config = function()
       require("dap-python").setup "uv" -- replace 'uv' with your python path if needed
+    end,
+  },
+  {
+    "leoluz/nvim-dap-go",
+    ft = "go",
+    dependencies = { "mfussenegger/nvim-dap" },
+    config = function()
+      require("dap-go").setup()
     end,
   },
 }
