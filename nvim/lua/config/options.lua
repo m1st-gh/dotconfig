@@ -26,7 +26,7 @@ o.fillchars = { eob = " " }
 o.termguicolors = true
 o.wrap = false
 o.signcolumn = "yes"
-o.cursorline = true
+o.cursorline = false
 o.incsearch = true
 o.ignorecase = true
 o.smartcase = true

@@ -9,6 +9,7 @@ return {
 			{ "<leader>l", icon = "", group = "lsp" },
 			{ "<leader>s", group = "search" },
 			{ "<leader>u", group = "ui" },
+			{ "<leader>d", group = "debug" },
 		},
 	},
 	keys = {

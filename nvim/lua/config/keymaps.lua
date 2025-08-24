@@ -13,6 +13,7 @@ map("n", "<Tab>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 map("n", "<S-Tab>", "<cmd>bprev<cr>", { desc = "Prev Buffer" })
 map("n", "<leader>x", "<cmd>bd<cr>", { desc = "Close Buffer" })
 map("n", "<leader>X", "<cmd>bd!<cr>", { desc = "Force Close Buffer" })
+map("n", "<leader>n", "<cmd>new<cr>", { desc = "New Buffer" })
 map("n", "q:", "<nop>")
 
 -- FILES
@@ -30,10 +31,13 @@ map("n", "<leader>fg", function()
 end, { desc = "Find Git Files" })
 map("n", "<leader>fb", function()
 	Snacks.picker.buffers()
-end, { desc = "Buffers" })
+end, { desc = "Find Buffers" })
 map("n", "<leader>fp", function()
 	Snacks.picker.projects()
 end, { desc = "Projects" })
+map("n", "<leader>fz", function()
+	Snacks.picker.lines()
+end, { desc = "Find in Current Buffer" })
 
 -- EXPLORER
 map("n", "<leader>e", function()
@@ -71,6 +75,9 @@ end, { desc = "Lazygit" })
 
 -- LSP
 map("n", "<leader>ld", function()
+	Snacks.picker.lsp_definitions()
+end, { desc = "Goto Definition" })
+map("n", "gd", function()
 	Snacks.picker.lsp_definitions()
 end, { desc = "Goto Definition" })
 map("n", "<leader>lD", function()

@@ -22,6 +22,7 @@ return {
 		dependencies = "nvim-tree/nvim-web-devicons",
 		opts = {
 			options = {
+				style_preset = 2,
 				offsets = {
 					{
 						filetype = "neo-tree",
