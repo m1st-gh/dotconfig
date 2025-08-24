@@ -58,53 +58,54 @@ config.cursor_blink_ease_out = "Linear"
 -- -----------------------------------------------------------------------------
 -- Colors (Copied from your original configuration)
 -- -----------------------------------------------------------------------------
-config.colors = {
-	foreground = "#abb2bf",
-	background = "#1e222a",
-	cursor_bg = "#abb2bf",
-	cursor_fg = "#1e222a",
-	cursor_border = "#98c379",
-	selection_fg = "#abb2bf",
-	selection_bg = "#353b45",
-	scrollbar_thumb = "#282c34",
-	split = "#31353d",
-	brights = {
-		"#565c64", -- black
-		"#e06c75", -- red
-		"#98c379", -- green
-		"#e5c07b", -- yellow
-		"#61afef", -- blue
-		"#c678dd", -- purple
-		"#56b6c2", -- teal
-		"#abb2bf", -- white
-	},
-	ansi = {
-		"#545862", -- bright black
-		"#DE8C92", -- bright red
-		"#7eca9c", -- bright green
-		"#EBCB8B", -- bright yellow
-		"#81A1C1", -- bright blue
-		"#de98fd", -- bright magenta
-		"#a3b8ef", -- bright cyan
-		"#c8ccd4", -- bright white
-	},
-	indexed = {
-		[136] = "#d19a66", -- orange
-		[137] = "#be5046", -- dark red
-		[138] = "#ff75a0", -- pink
-	},
-	compose_cursor = "#fca2aa",
-	copy_mode_active_highlight_bg = { Color = "#373b43" },
-	copy_mode_active_highlight_fg = { AnsiColor = "Black" },
-	copy_mode_inactive_highlight_bg = { Color = "#98c379" },
-	copy_mode_inactive_highlight_fg = { AnsiColor = "White" },
-	quick_select_label_bg = { Color = "#61afef" },
-	quick_select_label_fg = { Color = "#1e222a" },
-	quick_select_match_bg = { Color = "#e06c75" },
-	quick_select_match_fg = { Color = "#1e222a" },
-	input_selector_label_bg = { Color = "#61afef" },
-	input_selector_label_fg = { Color = "#1e222a" },
-}
+config.color_scheme = "Sonokai (Gogh)"
+-- config.colors = {
+-- 	foreground = "#abb2bf",
+-- 	background = "#1e222a",
+-- 	cursor_bg = "#abb2bf",
+-- 	cursor_fg = "#1e222a",
+-- 	cursor_border = "#98c379",
+-- 	selection_fg = "#abb2bf",
+-- 	selection_bg = "#353b45",
+-- 	scrollbar_thumb = "#282c34",
+-- 	split = "#31353d",
+-- 	brights = {
+-- 		"#565c64", -- black
+-- 		"#e06c75", -- red
+-- 		"#98c379", -- green
+-- 		"#e5c07b", -- yellow
+-- 		"#61afef", -- blue
+-- 		"#c678dd", -- purple
+-- 		"#56b6c2", -- teal
+-- 		"#abb2bf", -- white
+-- 	},
+-- 	ansi = {
+-- 		"#545862", -- bright black
+-- 		"#DE8C92", -- bright red
+-- 		"#7eca9c", -- bright green
+-- 		"#EBCB8B", -- bright yellow
+-- 		"#81A1C1", -- bright blue
+-- 		"#de98fd", -- bright magenta
+-- 		"#a3b8ef", -- bright cyan
+-- 		"#c8ccd4", -- bright white
+-- 	},
+-- 	indexed = {
+-- 		[136] = "#d19a66", -- orange
+-- 		[137] = "#be5046", -- dark red
+-- 		[138] = "#ff75a0", -- pink
+-- 	},
+-- 	compose_cursor = "#fca2aa",
+-- 	copy_mode_active_highlight_bg = { Color = "#373b43" },
+-- 	copy_mode_active_highlight_fg = { AnsiColor = "Black" },
+-- 	copy_mode_inactive_highlight_bg = { Color = "#98c379" },
+-- 	copy_mode_inactive_highlight_fg = { AnsiColor = "White" },
+-- 	quick_select_label_bg = { Color = "#61afef" },
+-- 	quick_select_label_fg = { Color = "#1e222a" },
+-- 	quick_select_match_bg = { Color = "#e06c75" },
+-- 	quick_select_match_fg = { Color = "#1e222a" },
+-- 	input_selector_label_bg = { Color = "#61afef" },
+-- 	input_selector_label_fg = { Color = "#1e222a" },
+-- }
 
 -- -----------------------------------------------------------------------------
 -- Keybindings
@@ -173,7 +174,37 @@ config.keys = {
 		mods = "LEADER|SHIFT",
 		action = act.AdjustPaneSize({ "Right", 1 }),
 	},
+	{
+		key = "n",
+		mods = "LEADER",
+		action = wezterm.action_callback(function(win, pane)
+			-- Step 1: Make the current pane (left) a dummy
+			win:perform_action(act.SendString("clear; cat >/dev/null\n"), pane)
 
+			-- Step 2: Create the right dummy pane
+			local right = win:perform_action(
+				act.SplitPane({
+					direction = "Right",
+					size = { Percent = 75 },
+					command = { args = { "sh", "-c", "clear; cat >/dev/null" } },
+				}),
+				pane
+			)
+
+			-- Step 3: Create the center pane (real shell)
+			local center = win:perform_action(
+				act.SplitPane({
+					direction = "Left",
+					size = { Percent = 66 }, -- 66% of 75% ≈ 50%
+					command = nil, -- Default interactive shell
+				}),
+				pane
+			)
+
+			-- Step 4: Focus the center pane
+			win:perform_action(act.ActivatePane(center), pane)
+		end),
+	},
 	-- Tab Management
 	{ key = "c", mods = "LEADER", action = act.SpawnTab("DefaultDomain") },
 	{
@@ -252,7 +283,7 @@ if smart_splits then
 		-- Smart Splits options from your original config:
 		direction_keys = { "h", "j", "k", "l" },
 		modifiers = {
-			move = "CTRL",
+			move = "LEADER",
 			resize = "META",
 		},
 		log_level = "info",

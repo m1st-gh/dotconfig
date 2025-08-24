@@ -1,0 +1,39 @@
+return {
+	{
+		"tummetott/reticle.nvim",
+		event = "VeryLazy", -- optionally lazy load the plugin
+		opts = {
+			-- add options here if you wish to override the default settings
+		},
+		-- Lua
+	},
+	{
+		"folke/persistence.nvim",
+		event = "BufReadPre", -- this will only start session saving when an actual file was opened
+		opts = {
+			-- add any custom options here
+		},
+	},
+	{ "nvim-tree/nvim-web-devicons", opts = {} },
+
+	{
+		"akinsho/bufferline.nvim",
+		version = "*",
+		dependencies = "nvim-tree/nvim-web-devicons",
+		opts = {
+			options = {
+				offsets = {
+					{
+						filetype = "neo-tree",
+						text = "Neo-tree",
+						highlight = "Directory",
+						text_align = "left",
+					},
+					{
+						filetype = "snacks_layout_box",
+					},
+				},
+			},
+		},
+	},
+}
