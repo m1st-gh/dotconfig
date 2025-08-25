@@ -10,6 +10,7 @@ return {
 			{ "<leader>s", group = "search" },
 			{ "<leader>u", group = "ui" },
 			{ "<leader>d", group = "debug" },
+			{ "<leader>r", icon = "󰑕" },
 		},
 	},
 	keys = {

@@ -13,7 +13,7 @@ map("n", "<Tab>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 map("n", "<S-Tab>", "<cmd>bprev<cr>", { desc = "Prev Buffer" })
 map("n", "<leader>x", "<cmd>bd<cr>", { desc = "Close Buffer" })
 map("n", "<leader>X", "<cmd>bd!<cr>", { desc = "Force Close Buffer" })
-map("n", "<leader>n", "<cmd>new<cr>", { desc = "New Buffer" })
+map("n", "<leader>n", "<cmd>enew<cr>", { desc = "New Buffer" })
 map("n", "q:", "<nop>")
 
 -- FILES
@@ -163,7 +163,9 @@ end, { desc = "Toggle Spell" })
 -- EDITITNG
 map("n", "<leader>/", "gcc", { desc = "toggle comment", remap = true })
 map("v", "<leader>/", "gc", { desc = "toggle comment", remap = true })
-
+map("n", "<leader>r", function()
+	vim.lsp.buf.rename()
+end, { desc = "Rename Symbol" })
 -- DEBUG
 
 local dap = require("dap")
