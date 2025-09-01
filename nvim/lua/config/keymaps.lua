@@ -4,6 +4,38 @@ local Snacks = require("snacks")
 
 local map = vim.keymap.set
 
+local function close_buffer(force)
+	local cur = vim.api.nvim_get_current_buf()
+	local bufname = vim.api.nvim_buf_get_name(cur)
+
+	-- Don't close snacks.explorer itself
+	if bufname:match("snacks://explorer") then
+		return
+	end
+
+	-- Get all listed buffers except the current one
+	local listed = vim.tbl_filter(function(b)
+		return vim.api.nvim_buf_is_loaded(b) and vim.bo[b].buflisted and b ~= cur
+	end, vim.api.nvim_list_bufs())
+
+	if #listed > 0 then
+		-- Try previous buffer first
+		local target = vim.fn.bufnr("#")
+		if target <= 0 or not vim.api.nvim_buf_is_loaded(target) or not vim.bo[target].buflisted then
+			-- If previous buffer invalid, pick the first listed buffer (next)
+			target = listed[1]
+		end
+		-- Switch to target buffer
+		vim.api.nvim_set_current_buf(target)
+		-- Delete current buffer
+		vim.api.nvim_buf_delete(cur, { force = force })
+	else
+		-- No other buffers, open a new empty buffer
+		vim.cmd("enew")
+		vim.api.nvim_buf_delete(cur, { force = force })
+	end
+end
+
 map("n", "<Esc>", "<cmd>noh<CR>", { desc = "general clear highlights" })
 map("n", "<leader>q", "<cmd>qa<cr>", { desc = "Quit NeoVim" })
 map("n", "<leader>Q", "<cmd>qa!<cr>", { desc = "Force Quit NeoVim" })
@@ -11,8 +43,16 @@ map("n", "<C-s>", "<cmd>w<cr>", { desc = "Write Buffer" })
 map("n", "<C-S>", "<cmd>wa<cr>", { desc = "Write All Buffer" })
 map("n", "<Tab>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 map("n", "<S-Tab>", "<cmd>bprev<cr>", { desc = "Prev Buffer" })
-map("n", "<leader>x", "<cmd>bd<cr>", { desc = "Close Buffer" })
-map("n", "<leader>X", "<cmd>bd!<cr>", { desc = "Force Close Buffer" })
+
+-- Normal close (asks for unsaved changes)
+map("n", "<leader>x", function()
+	close_buffer(false)
+end, { desc = "Close Buffer" })
+
+-- Force close (ignores unsaved changes)
+map("n", "<leader>X", function()
+	close_buffer(true)
+end, { desc = "Force Close Buffer" })
 map("n", "<leader>n", "<cmd>enew<cr>", { desc = "New Buffer" })
 map("n", "q:", "<nop>")
 
