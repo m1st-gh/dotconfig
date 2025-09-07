@@ -22,15 +22,17 @@ config.status_update_interval = 1000 -- milliseconds
 
 -- Default domain (e.g., for WSL)
 local wsl_domains = wezterm.default_wsl_domains()
+
 if #wsl_domains > 0 then
 	config.default_domain = wsl_domains[1].name
 end
+config.default_prog = { "pwsh.exe", "-NoLogo" }
 
 -- -----------------------------------------------------------------------------
 -- Appearance
 -- -----------------------------------------------------------------------------
 -- Font
-config.font = wezterm.font({ family = "JetBrainsMono NF" })
+config.font = wezterm.font({ family = "Lilex Nerd Font" })
 config.font_size = 14
 
 -- Window Decorations and Padding

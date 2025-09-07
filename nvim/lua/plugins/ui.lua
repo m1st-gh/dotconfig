@@ -8,6 +8,19 @@ return {
 		-- Lua
 	},
 	{
+		"nvim-treesitter/nvim-treesitter-context",
+		opts = {
+			max_lines = 5,
+		},
+	},
+	{
+		"nvim-treesitter/nvim-treesitter-textobjects",
+	},
+	{
+		"kylechui/nvim-surround",
+		opts = {},
+	},
+	{
 		"folke/persistence.nvim",
 		event = "BufReadPre", -- this will only start session saving when an actual file was opened
 		opts = {
@@ -16,6 +29,7 @@ return {
 	},
 	{ "nvim-tree/nvim-web-devicons", opts = {} },
 
+	{ "shortcuts/no-neck-pain.nvim", version = "*", opts = { width = 225 } },
 	{
 		"akinsho/bufferline.nvim",
 		version = "*",
