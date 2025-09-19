@@ -38,3 +38,12 @@ o.undofile = true
 o.virtualedit = "block"
 o.ruler = false -- Disable the default ruler
 o.winborder = "rounded"
+
+-- keep a 10-line margin vertically; window scrolls when within 10 lines
+vim.opt.scrolloff = 5
+
+-- optional: horizontal margin
+vim.opt.sidescrolloff = 7
+
+-- optional (Neovim 0.10+): smooth visual scrolling
+vim.opt.smoothscroll = true

@@ -32,7 +32,7 @@ config.default_prog = { "pwsh.exe", "-NoLogo" }
 -- Appearance
 -- -----------------------------------------------------------------------------
 -- Font
-config.font = wezterm.font({ family = "Lilex Nerd Font" })
+config.font = wezterm.font({ family = "0xProto Nerd Font" })
 config.font_size = 14
 
 -- Window Decorations and Padding

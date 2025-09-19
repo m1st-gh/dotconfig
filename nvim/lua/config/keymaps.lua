@@ -43,8 +43,26 @@ map("n", "<C-s>", "<cmd>w<cr>", { desc = "Write Buffer" })
 map("n", "<C-S>", "<cmd>wa<cr>", { desc = "Write All Buffer" })
 map("n", "<Tab>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 map("n", "<S-Tab>", "<cmd>bprev<cr>", { desc = "Prev Buffer" })
-map("v", "<leader>y", '"+y', { desc = "Yank to system clipboard" })
-map("v", "<leader>p", '"+p', { desc = "Paste to system clipboard" })
+map("n", "<leader>G", "<cmd>Neogen<cr>", { desc = "Generate Docstring" })
+-- Yank to system clipboard with motions
+map("n", "<leader>y", function()
+	vim.o.operatorfunc = "v:lua._clipboard_yank"
+	return "g@"
+end, { expr = true, desc = "Clipboard yank" })
+
+map("v", "<leader>y", '"+y', { desc = "Clipboard yank" })
+map({ "n", "v" }, "<leader>p", '"+p', { desc = "Clipboard paste" })
+
+-- Operatorfunc handler
+function _clipboard_yank(type)
+	if type == "line" then
+		vim.cmd('normal! `[V`]"+y')
+	elseif type == "block" then
+		vim.cmd('normal! `[\22`]"+y')
+	else
+		vim.cmd('normal! `[v`]"+y')
+	end
+end
 
 -- Normal close (asks for unsaved changes)
 map("n", "<leader>x", function()
@@ -62,6 +80,9 @@ map("n", "q:", "<nop>")
 map("n", "<leader>ff", function()
 	Snacks.picker.files()
 end, { desc = "Find Files" })
+map("n", "<leader>fF", function()
+	Snacks.picker.files({ hidden = true })
+end, { desc = "Find All Files" })
 map("n", "<leader>fr", function()
 	Snacks.picker.recent()
 end, { desc = "Recent Files" })
@@ -177,6 +198,27 @@ map("n", "<leader>fl", function()
 end, { desc = "Location List" })
 
 -- UI / TOGGLES
+
+-- Toggle diagnostics
+map("n", "<leader>ud", function()
+	if vim.diagnostic.is_enabled() then
+		vim.diagnostic.enable(false)
+	else
+		vim.diagnostic.enable(true)
+	end
+end, { desc = "Toggle diagnostics" })
+
+-- Toggle diagnostic underline (squiggly lines)
+vim.keymap.set("n", "<leader>uu", function()
+	local current = vim.diagnostic.config().underline
+	vim.diagnostic.config({ underline = not current })
+end, { desc = "Toggle diagnostic underline" })
+
+map("n", "<leader>uv", function()
+	local current = vim.diagnostic.config().virtual_text
+	vim.diagnostic.config({ virtual_text = not current })
+end, { desc = "Toggle diagnostic virtual text" })
+
 map("n", "<leader>uz", function()
 	Snacks.zen()
 end, { desc = "Toggle Zen Mode" })
@@ -189,7 +231,30 @@ end, { desc = "Dismiss Notifications" })
 map("n", "<leader>uc", function()
 	Snacks.toggle.option("conceallevel", { off = 0, on = 2 })
 end, { desc = "Toggle Conceal" })
-map("n", "<leader>uC", "<cmd>NoNeckPain<cr>", { desc = "Toggle center" })
+map("n", "<leader>uC", function()
+	local enabled = vim.g.__zen_mode_enabled
+
+	if not enabled then
+		vim.g.__zen_mode_enabled = true
+		-- save current settings
+		vim.g.__zen_laststatus = vim.o.laststatus
+		vim.g.__zen_showtabline = vim.o.showtabline
+		-- hide statusline and bufferline (tabline)
+		vim.opt.laststatus = 0
+		vim.opt.showtabline = 0
+	else
+		vim.g.__zen_mode_enabled = false
+		-- restore previous settings
+		if vim.g.__zen_laststatus ~= nil then
+			vim.opt.laststatus = vim.g.__zen_laststatus
+		end
+		if vim.g.__zen_showtabline ~= nil then
+			vim.opt.showtabline = vim.g.__zen_showtabline
+		end
+	end
+
+	vim.cmd("NoNeckPain")
+end, { desc = "Zen mode: center + hide status/bufferline" })
 map("n", "<leader>ul", function()
 	Snacks.toggle.line_number()
 end, { desc = "Toggle Line Numbers" })

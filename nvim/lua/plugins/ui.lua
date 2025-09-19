@@ -29,7 +29,7 @@ return {
 	},
 	{ "nvim-tree/nvim-web-devicons", opts = {} },
 
-	{ "shortcuts/no-neck-pain.nvim", version = "*", opts = { width = 225 } },
+	{ "shortcuts/no-neck-pain.nvim", version = "*", opts = { width = 200 } },
 	{
 		"akinsho/bufferline.nvim",
 		version = "*",
