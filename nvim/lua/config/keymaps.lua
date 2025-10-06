@@ -1,9 +1,9 @@
 -- snacks.nvim keymaps
 local Snacks = require("snacks")
--- TOP LEVEL
-
+local dap = require("dap")
 local map = vim.keymap.set
 
+-- Buffer helper function
 local function close_buffer(force)
 	local cur = vim.api.nvim_get_current_buf()
 	local bufname = vim.api.nvim_buf_get_name(cur)
@@ -36,24 +36,7 @@ local function close_buffer(force)
 	end
 end
 
-map("n", "<Esc>", "<cmd>noh<CR>", { desc = "general clear highlights" })
-map("n", "<leader>q", "<cmd>qa<cr>", { desc = "Quit NeoVim" })
-map("n", "<leader>Q", "<cmd>qa!<cr>", { desc = "Force Quit NeoVim" })
-map("n", "<C-s>", "<cmd>w<cr>", { desc = "Write Buffer" })
-map("n", "<C-S>", "<cmd>wa<cr>", { desc = "Write All Buffer" })
-map("n", "<Tab>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
-map("n", "<S-Tab>", "<cmd>bprev<cr>", { desc = "Prev Buffer" })
-map("n", "<leader>G", "<cmd>Neogen<cr>", { desc = "Generate Docstring" })
--- Yank to system clipboard with motions
-map("n", "<leader>y", function()
-	vim.o.operatorfunc = "v:lua._clipboard_yank"
-	return "g@"
-end, { expr = true, desc = "Clipboard yank" })
-
-map("v", "<leader>y", '"+y', { desc = "Clipboard yank" })
-map({ "n", "v" }, "<leader>p", '"+p', { desc = "Clipboard paste" })
-
--- Operatorfunc handler
+-- Clipboard helper function
 function _clipboard_yank(type)
 	if type == "line" then
 		vim.cmd('normal! `[V`]"+y')
@@ -64,120 +47,97 @@ function _clipboard_yank(type)
 	end
 end
 
--- Normal close (asks for unsaved changes)
+-- ============================================================================
+-- GLOBAL KEYBINDS (No Leader)
+-- ============================================================================
+
+-- UI & Navigation
+map("n", "<Esc>", "<cmd>noh<CR>", { desc = "Clear search highlights" })
+map("n", "<C-s>", "<cmd>w<cr>", { desc = "Save current buffer" })
+map("n", "<C-S>", "<cmd>wa<cr>", { desc = "Save all buffers" })
+map("n", "<Tab>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+map("n", "<S-Tab>", "<cmd>bprev<cr>", { desc = "Previous buffer" })
+map("n", "q:", "<nop>", { desc = "Disable command-line window" })
+map("n", "K", "<cmd>Lspsaga hover_doc<cr>", { desc = "Hover" })
+
+-- LSP Navigation
+map("n", "gd", function()
+	Snacks.picker.lsp_definitions()
+end, { desc = "Goto definition" })
+
+-- Debugging (F-keys)
+map("n", "<F5>", dap.continue, { desc = "DAP: Continue" })
+map("n", "<F6>", dap.toggle_breakpoint, { desc = "DAP: Toggle breakpoint" })
+map("n", "<F10>", dap.step_over, { desc = "DAP: Step over" })
+map("n", "<F11>", dap.step_into, { desc = "DAP: Step into" })
+map("n", "<F12>", dap.step_out, { desc = "DAP: Step out" })
+
+-- ============================================================================
+-- LEADER KEYBINDS (Organized by Category)
+-- ============================================================================
+
+-- ========================================
+-- BUFFER MANAGEMENT (<leader> + single key)
+-- ========================================
+map("n", "<leader>q", "<cmd>qa<cr>", { desc = "Quit Neovim" })
+map("n", "<leader>Q", "<cmd>qa!<cr>", { desc = "Force quit Neovim" })
 map("n", "<leader>x", function()
 	close_buffer(false)
-end, { desc = "Close Buffer" })
-
--- Force close (ignores unsaved changes)
+end, { desc = "Close buffer (safe)" })
 map("n", "<leader>X", function()
 	close_buffer(true)
-end, { desc = "Force Close Buffer" })
-map("n", "<leader>n", "<cmd>enew<cr>", { desc = "New Buffer" })
-map("n", "q:", "<nop>")
+end, { desc = "Force close buffer" })
+map("n", "<leader>n", "<cmd>enew<cr>", { desc = "New buffer" })
 
--- FILES
+-- ========================================
+-- CLIPBOARD OPERATIONS (<leader> + y/p)
+-- ========================================
+map("n", "<leader>y", function()
+	vim.o.operatorfunc = "v:lua._clipboard_yank"
+	return "g@"
+end, { expr = true, desc = "Yank to clipboard (motion)" })
+
+map("v", "<leader>y", '"+y', { desc = "Yank selection to clipboard" })
+map({ "n", "v" }, "<leader>p", '"+p', { desc = "Paste from clipboard" })
+
+-- ========================================
+-- FILE FINDER (<leader>f + *)
+-- ========================================
 map("n", "<leader>ff", function()
 	Snacks.picker.files()
-end, { desc = "Find Files" })
+end, { desc = "Find files" })
 map("n", "<leader>fF", function()
 	Snacks.picker.files({ hidden = true })
-end, { desc = "Find All Files" })
+end, { desc = "Find all files (hidden)" })
 map("n", "<leader>fr", function()
 	Snacks.picker.recent()
-end, { desc = "Recent Files" })
+end, { desc = "Recent files" })
 map("n", "<leader>fc", function()
 	Snacks.picker.files({ cwd = vim.fn.stdpath("config") })
-end, { desc = "Find Config File" })
-map("n", "<leader>fg", function()
-	Snacks.picker.git_files()
-end, { desc = "Find Git Files" })
+end, { desc = "Find config files" })
 map("n", "<leader>fb", function()
 	Snacks.picker.buffers()
-end, { desc = "Find Buffers" })
+end, { desc = "Find buffers" })
 map("n", "<leader>fp", function()
 	Snacks.picker.projects()
 end, { desc = "Projects" })
 map("n", "<leader>fz", function()
 	Snacks.picker.lines()
-end, { desc = "Find in Current Buffer" })
+end, { desc = "Find in current buffer" })
 
--- EXPLORER
-map("n", "<leader>e", function()
-	Snacks.explorer()
-end, { desc = "File Explorer" })
-
--- GIT
-map("n", "<leader>gb", function()
-	Snacks.picker.git_branches()
-end, { desc = "Git Branches" })
-map("n", "<leader>gl", function()
-	Snacks.picker.git_log()
-end, { desc = "Git Log" })
-map("n", "<leader>gL", function()
-	Snacks.picker.git_log_line()
-end, { desc = "Git Log Line" })
-map("n", "<leader>gs", function()
-	Snacks.picker.git_status()
-end, { desc = "Git Status" })
-map("n", "<leader>gS", function()
-	Snacks.picker.git_stash()
-end, { desc = "Git Stash" })
-map("n", "<leader>gd", function()
-	Snacks.picker.git_diff()
-end, { desc = "Git Diff" })
-map("n", "<leader>gf", function()
-	Snacks.picker.git_log_file()
-end, { desc = "Git Log File" })
-map({ "n", "v" }, "<leader>gB", function()
-	Snacks.gitbrowse()
-end, { desc = "Git Browse" })
-map("n", "<leader>gg", function()
-	Snacks.lazygit()
-end, { desc = "Lazygit" })
-
--- LSP
-map("n", "<leader>ld", function()
-	Snacks.picker.lsp_definitions()
-end, { desc = "Goto Definition" })
-map("n", "gd", function()
-	Snacks.picker.lsp_definitions()
-end, { desc = "Goto Definition" })
-map("n", "<leader>lD", function()
-	Snacks.picker.lsp_declarations()
-end, { desc = "Goto Declaration" })
-map("n", "<leader>lr", function()
-	Snacks.picker.lsp_references()
-end, { desc = "References" })
-map("n", "<leader>lI", function()
-	Snacks.picker.lsp_implementations()
-end, { desc = "Goto Implementation" })
-map("n", "<leader>ly", function()
-	Snacks.picker.lsp_type_definitions()
-end, { desc = "Goto Type Definition" })
-map("n", "<leader>ls", function()
-	Snacks.picker.lsp_symbols()
-end, { desc = "LSP Symbols" })
-map("n", "<leader>lS", function()
-	Snacks.picker.lsp_workspace_symbols()
-end, { desc = "Workspace Symbols" })
-
--- SEARCH (non-files) - MOVED TO <leader>f
-map("n", "<leader>fb", function()
-	Snacks.picker.lines()
-end, { desc = "Buffer Lines" })
+-- SEARCH OPERATIONS (<leader>f + *)
 map("n", "<leader>fB", function()
 	Snacks.picker.grep_buffers()
-end, { desc = "Grep Open Buffers" })
+end, { desc = "Grep open buffers" })
 map("n", "<leader>fg", function()
 	Snacks.picker.grep()
-end, { desc = "Grep" })
+end, { desc = "Grep files" })
 map({ "n", "x" }, "<leader>fw", function()
 	Snacks.picker.grep_word()
-end, { desc = "Grep Word/Selection" })
+end, { desc = "Grep word/selection" })
 map("n", "<leader>fh", function()
 	Snacks.picker.help()
-end, { desc = "Help Pages" })
+end, { desc = "Help pages" })
 map("n", "<leader>fk", function()
 	Snacks.picker.keymaps()
 end, { desc = "Keymaps" })
@@ -186,20 +146,83 @@ map("n", "<leader>fm", function()
 end, { desc = "Marks" })
 map("n", "<leader>fM", function()
 	Snacks.picker.man()
-end, { desc = "Man Pages" })
+end, { desc = "Man pages" })
 map("n", "<leader>fu", function()
 	Snacks.picker.undo()
-end, { desc = "Undo History" })
+end, { desc = "Undo history" })
 map("n", "<leader>fq", function()
 	Snacks.picker.qflist()
-end, { desc = "Quickfix List" })
+end, { desc = "Quickfix list" })
 map("n", "<leader>fl", function()
 	Snacks.picker.loclist()
-end, { desc = "Location List" })
+end, { desc = "Location list" })
 
--- UI / TOGGLES
+-- ========================================
+-- EXPLORER (<leader>e)
+-- ========================================
+map("n", "<leader>e", function()
+	Snacks.explorer()
+end, { desc = "File explorer" })
 
--- Toggle diagnostics
+-- ========================================
+-- GIT OPERATIONS (<leader>g + *)
+-- ========================================
+map("n", "<leader>gb", function()
+	Snacks.picker.git_branches()
+end, { desc = "Git branches" })
+map("n", "<leader>gl", function()
+	Snacks.picker.git_log()
+end, { desc = "Git log" })
+map("n", "<leader>gL", function()
+	Snacks.picker.git_log_line()
+end, { desc = "Git log (current line)" })
+map("n", "<leader>gs", function()
+	Snacks.picker.git_status()
+end, { desc = "Git status" })
+map("n", "<leader>gS", function()
+	Snacks.picker.git_stash()
+end, { desc = "Git stash" })
+map("n", "<leader>gd", function()
+	Snacks.picker.git_diff()
+end, { desc = "Git diff" })
+map("n", "<leader>gf", function()
+	Snacks.picker.git_log_file()
+end, { desc = "Git log (current file)" })
+map({ "n", "v" }, "<leader>gB", function()
+	Snacks.gitbrowse()
+end, { desc = "Git browse" })
+map("n", "<leader>gg", function()
+	Snacks.lazygit()
+end, { desc = "Lazygit" })
+
+-- ========================================
+-- LSP OPERATIONS (<leader>l + *)
+-- ========================================
+map("n", "<leader>ld", function()
+	Snacks.picker.lsp_definitions()
+end, { desc = "Goto definition" })
+map("n", "<leader>lD", function()
+	Snacks.picker.lsp_declarations()
+end, { desc = "Goto declaration" })
+map("n", "<leader>lr", function()
+	Snacks.picker.lsp_references()
+end, { desc = "References" })
+map("n", "<leader>lI", function()
+	Snacks.picker.lsp_implementations()
+end, { desc = "Goto implementation" })
+map("n", "<leader>ly", function()
+	Snacks.picker.lsp_type_definitions()
+end, { desc = "Goto type definition" })
+map("n", "<leader>ls", function()
+	Snacks.picker.lsp_symbols()
+end, { desc = "Document symbols" })
+map("n", "<leader>lS", function()
+	Snacks.picker.lsp_workspace_symbols()
+end, { desc = "Workspace symbols" })
+
+-- ========================================
+-- UI TOGGLES (<leader>u + *)
+-- ========================================
 map("n", "<leader>ud", function()
 	if vim.diagnostic.is_enabled() then
 		vim.diagnostic.enable(false)
@@ -208,8 +231,7 @@ map("n", "<leader>ud", function()
 	end
 end, { desc = "Toggle diagnostics" })
 
--- Toggle diagnostic underline (squiggly lines)
-vim.keymap.set("n", "<leader>uu", function()
+map("n", "<leader>uu", function()
 	local current = vim.diagnostic.config().underline
 	vim.diagnostic.config({ underline = not current })
 end, { desc = "Toggle diagnostic underline" })
@@ -221,16 +243,16 @@ end, { desc = "Toggle diagnostic virtual text" })
 
 map("n", "<leader>uz", function()
 	Snacks.zen()
-end, { desc = "Toggle Zen Mode" })
+end, { desc = "Toggle Zen mode" })
 map("n", "<leader>uZ", function()
 	Snacks.zen.zoom()
-end, { desc = "Toggle Zoom" })
+end, { desc = "Toggle zoom" })
 map("n", "<leader>un", function()
 	Snacks.notifier.hide()
-end, { desc = "Dismiss Notifications" })
+end, { desc = "Dismiss notifications" })
 map("n", "<leader>uc", function()
 	Snacks.toggle.option("conceallevel", { off = 0, on = 2 })
-end, { desc = "Toggle Conceal" })
+end, { desc = "Toggle conceal" })
 map("n", "<leader>uC", function()
 	local enabled = vim.g.__zen_mode_enabled
 
@@ -255,46 +277,41 @@ map("n", "<leader>uC", function()
 
 	vim.cmd("NoNeckPain")
 end, { desc = "Zen mode: center + hide status/bufferline" })
+
 map("n", "<leader>ul", function()
 	Snacks.toggle.line_number()
-end, { desc = "Toggle Line Numbers" })
+end, { desc = "Toggle line numbers" })
 map("n", "<leader>uL", function()
 	Snacks.toggle.option("relativenumber")
-end, { desc = "Toggle Relative Number" })
+end, { desc = "Toggle relative numbers" })
 map("n", "<leader>uw", function()
 	Snacks.toggle.option("wrap")
-end, { desc = "Toggle Wrap" })
+end, { desc = "Toggle line wrap" })
 map("n", "<leader>us", function()
 	Snacks.toggle.option("spell")
-end, { desc = "Toggle Spell" })
+end, { desc = "Toggle spell check" })
 
--- EDITITNG
-map("n", "<leader>/", "gcc", { desc = "toggle comment", remap = true })
-map("v", "<leader>/", "gc", { desc = "toggle comment", remap = true })
+-- ========================================
+-- EDITING (<leader> + /, r, G)
+-- ========================================
+map("n", "<leader>/", "gcc", { desc = "Toggle comment", remap = true })
+map("v", "<leader>/", "gc", { desc = "Toggle comment", remap = true })
 map("n", "<leader>r", function()
 	vim.lsp.buf.rename()
-end, { desc = "Rename Symbol" })
--- DEBUG
+end, { desc = "Rename symbol" })
+map("n", "<leader>G", "<cmd>Neogen<cr>", { desc = "Generate docstring" })
 
-local dap = require("dap")
-
-map("n", "<F5>", dap.continue, { desc = "DAP Continue" })
-map("n", "<F10>", dap.step_over, { desc = "DAP Step Over" })
-map("n", "<F11>", dap.step_into, { desc = "DAP Step Into" })
-map("n", "<F12>", dap.step_out, { desc = "DAP Step Out" })
-
--- ⛔ Breakpoints
-map("n", "<F6>", dap.toggle_breakpoint, { desc = "DAP Toggle Breakpoint (F6)" })
-map("n", "<leader>db", dap.toggle_breakpoint, { desc = "DAP Toggle Breakpoint" })
+-- ========================================
+-- DEBUGGING (<leader>d + *)
+-- ========================================
+map("n", "<leader>db", dap.toggle_breakpoint, { desc = "DAP: Toggle breakpoint" })
 map("n", "<leader>dB", function()
 	dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
-end, { desc = "DAP Conditional Breakpoint" })
+end, { desc = "DAP: Conditional breakpoint" })
 
--- 📝 Logpoints
 map("n", "<leader>dp", function()
 	dap.set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
-end, { desc = "DAP Set Logpoint" })
+end, { desc = "DAP: Set logpoint" })
 
--- 📜 REPL / Eval
-map("n", "<leader>de", dap.repl.open, { desc = "DAP Open REPL" })
-map("n", "<leader>dl", dap.run_last, { desc = "DAP Run Last" })
+map("n", "<leader>de", dap.repl.open, { desc = "DAP: Open REPL" })
+map("n", "<leader>dl", dap.run_last, { desc = "DAP: Run last" })

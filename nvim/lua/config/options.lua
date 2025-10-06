@@ -17,7 +17,7 @@ o.relativenumber = true
 o.mouse = "a"
 
 -- System clipboard
--- o.clipboard = "unnamedplus"
+o.clipboard = {}
 
 -- Hide tildes (~) on empty lines at the end of buffer
 o.fillchars = { eob = " " }

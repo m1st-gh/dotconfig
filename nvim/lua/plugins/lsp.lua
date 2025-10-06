@@ -44,6 +44,7 @@ return {
 				lua = { "stylua" },
 				python = { "isort", "black" },
 				javascript = { "prettierd", "prettier", stop_after_first = true },
+				c = { "clang-format" },
 			},
 		},
 	},
@@ -111,18 +112,26 @@ return {
 		opts_extend = { "sources.default" },
 	},
 	{
-		{
-			"danymat/neogen",
+		"danymat/neogen",
 
-			opts = {
-				languages = {
-					python = {
-						template = {
-							annotation_convention = "numpydoc",
-						},
+		opts = {
+			languages = {
+				python = {
+					template = {
+						annotation_convention = "numpydoc",
 					},
 				},
 			},
+		},
+	},
+	{
+		"nvimdev/lspsaga.nvim",
+		config = function()
+			require("lspsaga").setup({})
+		end,
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter", -- optional
+			"nvim-tree/nvim-web-devicons", -- optional
 		},
 	},
 }
