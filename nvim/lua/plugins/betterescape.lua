@@ -1,7 +1,7 @@
 return {
-  {
-    "max397574/better-escape.nvim",
-    opts = {},
-    enabled = false,
-  },
+  -- {
+  --   "max397574/better-escape.nvim",
+  --   opts = {},
+  --   enabled = false,
+  -- },
 }

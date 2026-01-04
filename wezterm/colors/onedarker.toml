@@ -1,0 +1,46 @@
+[colors]
+foreground = "#a0a8b7"
+background = "#1f2329"
+cursor_bg = "#a0a8b7"
+cursor_border = "#a0a8b7"
+cursor_fg = "#1f2329"
+selection_bg = "#30363f"
+selection_fg = "#a0a8b7"
+split = "#4fa6ed"
+compose_cursor = "#cc9057"
+scrollbar_thumb = "#282c34"
+
+# ANSI colors: Black, Red, Green, Yellow, Blue, Magenta (Purple), Cyan, White (Light Grey)
+ansi = ["#0e1013", "#e55561", "#8ebd6b", "#e2b86b", "#4fa6ed", "#bf68d9", "#48b0bd", "#7a818e"]
+# Brights: Usually lighter versions or the main palette colors
+brights = ["#535965", "#e55561", "#8ebd6b", "#e2b86b", "#4fa6ed", "#bf68d9", "#48b0bd", "#a0a8b7"]
+
+# [colors.tab_bar]
+# inactive_tab_edge = "#181b20"
+# background = "#1f2329"
+#
+# [colors.tab_bar.active_tab]
+# fg_color = "#1f2329"
+# bg_color = "#4fa6ed"
+#
+# [colors.tab_bar.inactive_tab]
+# fg_color = "#7a818e"
+# bg_color = "#282c34"
+#
+# [colors.tab_bar.inactive_tab_hover]
+# fg_color = "#4fa6ed"
+# bg_color = "#30363f"
+#
+# [colors.tab_bar.new_tab_hover]
+# fg_color = "#4fa6ed"
+# bg_color = "#1f2329"
+# intensity = "Bold"
+#
+# [colors.tab_bar.new_tab]
+# fg_color = "#4fa6ed"
+# bg_color = "#1f2329"
+
+[metadata]
+aliases = ["onedark-darker"]
+author = "Custom"
+name = "OneDarker"

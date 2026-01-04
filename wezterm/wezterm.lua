@@ -32,8 +32,8 @@ config.default_prog = { "pwsh.exe", "-NoLogo" }
 -- Appearance
 -- -----------------------------------------------------------------------------
 -- Font
-config.font = wezterm.font({ family = "FiraCode Nerd Font" })
-config.font_size = 14
+config.font = wezterm.font({ family = "FiraCode Nerd Font Ret" })
+config.font_size = 12
 
 -- Window Decorations and Padding
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
@@ -42,7 +42,7 @@ config.window_content_alignment = {
 	horizontal = "Center",
 	vertical = "Center",
 }
-config.max_fps = 240
+config.max_fps = 120
 
 -- Tab Bar
 config.enable_tab_bar = true
@@ -56,11 +56,14 @@ config.cursor_blink_rate = 500
 config.animation_fps = 1
 config.cursor_blink_ease_in = "Linear"
 config.cursor_blink_ease_out = "Linear"
+config.front_end = "WebGpu"
+config.webgpu_power_preference = "HighPerformance"
 
 -- -----------------------------------------------------------------------------
 -- Colors (Copied from your original configuration)
 -- -----------------------------------------------------------------------------
-config.color_scheme = "catppuccin-mocha"
+config.color_scheme = "OneDarker"
+config.freetype_load_target = "Normal"
 
 -- -----------------------------------------------------------------------------
 -- Keybindings
